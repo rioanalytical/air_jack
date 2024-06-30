@@ -39,6 +39,10 @@ You can install Apache Airflow using pip. It’s recommended to install Airflow 
 
 pip install apache-airflow
 
+pip install apache-airflow-providers-mysql
+conda install -c conda-forge apache-airflow-providers-mysql
+
+
 
 Step 2: Configure Apache Airflow
 After installing, you need to initialize the Airflow database and create the necessary folders.
