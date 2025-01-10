@@ -1,0 +1,14 @@
+import pandas as pd
+from scipy.stats import percentileofscore
+
+# Sample data
+data = {
+    "transaction_id": [1, 2, 3, 4, 5],
+    "risk_score": [90, 85, 85, 80, 70]
+}
+df = pd.DataFrame(data)
+
+# Calculate the percentile for each risk_score
+df["percentile"] = df["risk_score"].apply(lambda x: percentileofscore(df["risk_score"], x, kind='rank'))
+
+print(df)
