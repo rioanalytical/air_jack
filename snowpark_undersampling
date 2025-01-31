@@ -1,0 +1,45 @@
+# Import necessary libraries
+from snowflake.snowpark import Session
+from snowflake.snowpark.functions import col
+from snowflake.snowpark.types import FloatType, IntegerType
+from sklearn.cluster import KMeans
+import numpy as np
+
+# Create a session with your Snowflake credentials
+connection_params = {
+    "account": "<your_account>",
+    "user": "<your_user>",
+    "password": "<your_password>",
+    "role": "<your_role>",
+    "warehouse": "<your_warehouse>",
+    "database": "<your_database>",
+    "schema": "<your_schema>"
+}
+
+session = Session.builder.configs(connection_params).create()
+
+# Load data from a Snowflake table into a Snowpark DataFrame
+df = session.table("your_input_table")
+
+# Separate majority and minority classes
+majority_class = df.filter(col("target_column") == 1)  # Assuming '1' is the majority class
+minority_class = df.filter(col("target_column") == 0)  # Assuming '0' is the minority class
+
+# Convert majority class to numpy array for KMeans processing
+majority_data = majority_class.select("feature1", "feature2").to_pandas().values  # Adjust features as needed
+
+# Apply KMeans clustering to find centroids
+n_clusters = 100  # Set the desired number of clusters
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+kmeans.fit(majority_data)
+
+# Get centroids and create a new DataFrame for them
+centroids = kmeans.cluster_centers_
+centroid_df = session.create_dataframe(centroids.tolist(), schema=["feature1", "feature2"])
+centroid_df = centroid_df.with_column("target_column", col("target_column").cast(IntegerType()).lit(1))  # Assign majority class label
+
+# Combine minority class with centroids
+balanced_df = minority_class.union(centroid_df)
+
+# Write the balanced DataFrame back to Snowflake
+balanced_df.write.mode("overwrite").save_as_table("your_output_table")
