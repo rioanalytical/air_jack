@@ -1,0 +1,20 @@
+SELECT 
+    account_number, 
+    date_transaction, 
+    Over_spend_amount,
+    
+    -- Cumulative overspend in the last 90 days (including current transaction)
+    SUM(Over_spend_amount) OVER (
+        PARTITION BY account_number 
+        ORDER BY date_transaction 
+        RANGE BETWEEN INTERVAL '90 days' PRECEDING AND CURRENT ROW
+    ) AS cumulative_overspend_last_90d,
+    
+    -- Cumulative overspend in the previous 90-day window (excluding current transaction)
+    SUM(Over_spend_amount) OVER (
+        PARTITION BY account_number 
+        ORDER BY date_transaction 
+        RANGE BETWEEN INTERVAL '180 days' PRECEDING AND INTERVAL '91 days' PRECEDING
+    ) AS cumulative_overspend_prev_90d
+
+FROM my_table;
