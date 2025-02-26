@@ -1,0 +1,77 @@
+1. Why Use Spark for Scoring in Dataiku?
+Parallel Processing: Distributes computation across multiple nodes.
+Scalability: Handles large datasets efficiently without memory bottlenecks.
+Optimized I/O: Works well with big data formats like Parquet.
+2. Steps to Implement Spark-Based Scoring in Dataiku
+Step 1: Enable Spark for Your Dataiku Job
+Ensure that your Dataiku instance is configured to use Spark.
+Choose "Spark" as the execution engine in Dataiku's recipe settings.
+Step 2: Load Your Pickled Model
+Since your model is serialized with pickle, you'll need to broadcast it to Spark workers so they can use it in distributed UDFs.
+
+python
+Copy
+Edit
+import pickle
+import dataiku
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import pandas_udf, col
+import pandas as pd
+
+# Initialize Spark session
+spark = SparkSession.builder.getOrCreate()
+
+# Load the model
+with open("/path/to/model.pkl", "rb") as f:  # Store the model in a Dataiku managed folder
+    model = pickle.load(f)
+
+# Broadcast the model to all worker nodes
+broadcast_model = spark.sparkContext.broadcast(model)
+Step 3: Define a Spark UDF for Batch Prediction
+Since Spark DataFrames do not directly support sklearn models, define a Pandas UDF.
+
+python
+Copy
+Edit
+@pandas_udf("double")  # Adjust return type based on your model's output
+def predict_udf(features: pd.Series) -> pd.Series:
+    model = broadcast_model.value  # Access the broadcasted model
+    return pd.Series(model.predict(features.to_list()))  # Ensure input is in the right format
+Step 4: Load and Process Data in Spark
+Read the input dataset as a Spark DataFrame.
+Apply the prediction function.
+python
+Copy
+Edit
+# Load input dataset from Dataiku as Spark DataFrame
+input_dataset = dataiku.Dataset("input_dataset")
+df_spark = input_dataset.get_dataframe(spark=True)  # Load directly as Spark DataFrame
+
+# Apply prediction
+df_spark = df_spark.withColumn("predictions", predict_udf(col("features_column")))
+
+# Save output dataset back to Dataiku
+output_dataset = dataiku.Dataset("output_dataset")
+output_dataset.write_with_schema(df_spark.toPandas())  # Convert Spark DF to Pandas before saving
+3. Optimizations for Faster Scoring
+Use Parquet Instead of CSV
+
+Parquet is optimized for Spark and reduces I/O time.
+python
+Copy
+Edit
+df_spark.write.format("parquet").save("output_dataset")
+Adjust Partitioning for Better Parallelism
+
+Spark processes data in partitions; ensure your dataset is well-partitioned.
+python
+Copy
+Edit
+df_spark = df_spark.repartition(10)  # Adjust based on cluster size
+Use Dataiku's Spark SQL for Performance Gains
+
+If your model supports SQL-based transformations, consider in-database scoring.
+4. When to Use Spark in Dataiku
+Your dataset is too large to fit in memory (millions of rows).
+You are running Dataiku on a distributed cluster (Hadoop, Databricks, etc.).
+Your model is batch-scoring friendly (not real-time).
