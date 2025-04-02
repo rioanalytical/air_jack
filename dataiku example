@@ -1,0 +1,52 @@
+Fraud Detection for Online Transactions
+Problem Statement:
+A fintech company is facing increasing fraudulent transactions and wants to improve its fraud detection mechanism. Your task is to build a machine learning model that can classify transactions as fraudulent or legitimate using historical transaction data.
+
+Dataset:
+You will receive a dataset containing transaction details such as:
+
+Transaction ID
+
+Amount
+
+Timestamp
+
+Payment Method
+
+User Account Age
+
+Location (IP-based)
+
+Previous Fraud Flags
+
+Objective:
+
+Build a fraud detection model using classification techniques.
+
+Leverage Dataiku AutoML or build a custom model using Python or SQL recipes.
+
+Ensure high precision & recall to minimize false positives and false negatives.
+
+Deploy the model as a scoring pipeline for real-time or batch predictions.
+
+Expected Deliverables:
+
+Exploratory Data Analysis (EDA): Identify trends & patterns.
+
+Feature Engineering: Create meaningful features for the model.
+
+ML Model: Train & evaluate a classification model (e.g., Random Forest, XGBoost).
+
+Scoring Pipeline: Deploy the model in Dataiku for batch scoring.
+
+Insights & Reporting: Generate a dashboard highlighting fraud patterns.
+
+Time Estimate: 8 hours
+
+2 hours: Data exploration & cleaning
+
+2 hours: Feature engineering
+
+2 hours: Model training & tuning
+
+2 hours: Deployment & reporting
