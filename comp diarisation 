@@ -1,0 +1,78 @@
+detailed comparison on performances and cabiats is using following products for diarisation.
+
+pyanote, nvidia nemo and speech brain
+
+Here's a detailed comparison of **Pyannote**, **NVIDIA NeMo**, and **SpeechBrain** for speaker diarization:
+
+## Performance Comparison
+
+| **Product** | **Performance Features** | **Accuracy** | **Complexity Handling** |
+|-------------|--------------------------|--------------|-------------------------|
+| **Pyannote** | High accuracy with deep neural networks, adaptable to various recordings, supports multiple audio formats[1]. | High | Handles background noise and overlapping speech well[1]. |
+| **NVIDIA NeMo** | Utilizes Multi-scale Diarization Decoder (MSDD), supports post-processing for improved accuracy[3]. | High | Effective in complex environments with customizable configurations[3]. |
+| **SpeechBrain** | Offers robust speaker diarization with support for various models and easy integration[4]. | High | Handles diverse acoustic conditions, though specifics on complexity handling are less detailed. |
+
+## Capabilities
+
+- **Pyannote**: Integrates well with ASR tools like Whisper, providing detailed transcriptions with speaker identification[1].
+- **NVIDIA NeMo**: Offers end-to-end AI workflow acceleration, including model training and inference optimization[2][3].
+- **SpeechBrain**: Provides a flexible framework for speech processing tasks, including diarization and ASR[4].
+
+## Implementation and Integration
+
+- **Pyannote**: Implemented using Python, integrates seamlessly with existing audio processing pipelines[1].
+- **NVIDIA NeMo**: Utilizes Hydra configurations for flexible setup and supports various domains through YAML files[3].
+- **SpeechBrain**: Designed for ease of use with Python, supports multiple speech tasks and models[4].
+
+## Note:
+SpeechBrain's specific details on diarization performance and complexity handling are not provided in the search results, so the comparison is based on general capabilities and known features.[1][2][3]
+
+Citations:
+[1] Whisper and Pyannote: The Ultimate Solution for Speech Transcription https://scalastic.io/en/whisper-pyannote-ultimate-speech-transcription/
+[2] Performance — NVIDIA NeMo Framework User Guide https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance_summary.html
+[3] End-to-End Speaker Diarization Configuration Files https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/asr/speaker_diarization/configs.html
+[4] Whisper Automatic Speech Recognition (ASR) with Diarization https://learnopencv.com/automatic-speech-recognition/
+[5] speechbrain 0.5.5 - PyPI https://pypi.org/project/speechbrain/0.5.5/
+[6] speechbrain 0.5.15 - PyPI https://pypi.org/project/speechbrain/0.5.15/
+[7] Apr 2024, Speaker Diarization Performance Evaluation: Pyannote ... https://docs.voice-ping.com/voiceping-corporation-company-profile/apr-2024-speaker-diarization-performance-evaluation-pyannoteaudio-vs-nvidia-nemo-and-post-processing-approach-using-openais-gpt-4-turbo-1
+[8] speechbrain.processing.diarization module - Read the Docs https://speechbrain.readthedocs.io/en/stable/API/speechbrain.processing.diarization.html
+[9] Speaker Diarization — NVIDIA NeMo Framework User Guide 24.07 ... https://docs.nvidia.com/nemo-framework/user-guide/24.07/nemotoolkit/asr/speaker_diarization/intro.html
+[10] pyannote - GitHub https://github.com/pyannote
+[11] Development of Supervised Speaker Diarization System Based on ... https://www.mdpi.com/1424-8220/23/4/2082
+[12] Speaker Diarization - A Lazy Data Science Guide - Mohit Mayank http://mohitmayank.com/a_lazy_data_science_guide/audio_intelligence/speaker_diarization/
+[13] Speaker Diarization 3.1 · Models - Dataloop https://dataloop.ai/library/model/pyannote_speaker-diarization-31/
+[14] pyannote.audio: neural building blocks for speaker diarization https://paperswithcode.com/paper/pyannoteaudio-neural-building-blocks-for/review/
+[15] [PDF] A Comparative Analysis of Speaker Diarization Models https://aclanthology.org/2024.fieldmatters-1.6.pdf
+[16] pyannote/pyannote-audio: Neural building blocks for speaker ... https://github.com/pyannote/pyannote-audio
+[17] Increasing speed of Speaker Diarization pipeline with CPU #778 https://github.com/pyannote/pyannote-audio/discussions/778
+[18] Speaker Diarization Training - NVIDIA/NeMo - GitHub https://github.com/NVIDIA/NeMo/blob/main/tutorials/speaker_tasks/Speaker_Diarization_Training.ipynb
+[19] Speaker Diarization — NVIDIA NeMo Framework User Guide https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/asr/speaker_diarization/intro.html
+[20] NeMo Speaker Diarization API - NVIDIA Docs Hub https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/asr/speaker_diarization/api.html
+[21] Speaker Diarization — NVIDIA NeMo Framework User Guide https://docs.nvidia.com/nemo-framework/user-guide/24.09/nemotoolkit/asr/speaker_diarization/intro.html
+[22] Models — NVIDIA NeMo Framework User Guide https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/asr/speaker_diarization/models.html
+[23] Speker Diarization Using Whisper Transcription and Nvidia NeMo https://github.com/openai/whisper/discussions/898
+[24] NeMo/tutorials/speaker_tasks/Speaker_Diarization_Inference.ipynb ... https://github.com/NVIDIA/NeMo/blob/main/tutorials/speaker_tasks/Speaker_Diarization_Inference.ipynb
+[25] Turbocharge ASR Accuracy and Speed with NVIDIA NeMo Parakeet ... https://developer.nvidia.com/blog/turbocharge-asr-accuracy-and-speed-with-nvidia-nemo-parakeet-tdt/
+[26] Diarization Inference - Runs out of memory, bad performance #6732 https://github.com/NVIDIA/NeMo/issues/6732
+[27] Tag: Speech Recognition / Diarization | NVIDIA Technical Blog https://developer.nvidia.com/blog/tag/speech-recognition/
+[28] Models — NVIDIA NeMo Framework User Guide 24.07 documentation https://docs.nvidia.com/nemo-framework/user-guide/24.07/nemotoolkit/asr/speaker_diarization/models.html
+[29] Conversational AI with Nvidia NeMo : Speaker Diarization ... - LinkedIn https://www.linkedin.com/pulse/conversational-ai-nvidia-nemo-speaker-diarization-automatic-speech-zhxac
+[30] A Review of Speaker Diarization: Recent Advances with Deep ... https://arxiv.org/abs/2101.09624
+[31] Speaker Diarization: A Review of Objectives and Methods - MDPI https://www.mdpi.com/2076-3417/15/4/2002
+[32] A curated list of awesome Speaker Diarization papers ... - GitHub https://github.com/wq2012/awesome-diarization
+[33] speechbrain/speechbrain: A PyTorch-based Speech Toolkit - GitHub https://github.com/speechbrain/speechbrain
+[34] SpeechBrain: Open-Source Conversational AI for Everyone https://speechbrain.github.io
+[35] speechbrain.processing - Read the Docs https://speechbrain.readthedocs.io/en/latest/API/speechbrain.processing.html
+[36] State of Speaker Diarization in 2023 - Picovoice https://picovoice.ai/blog/state-of-speaker-diarization/
+[37] [PDF] SpeechBrain: A General-Purpose Speech Toolkit - arXiv https://arxiv.org/pdf/2106.04624.pdf
+[38] Pyannote Diarization by Sieve — Run with an API https://www.sievedata.com/functions/sieve/pyannote-diarization
+[39] Pyannote Speaker Diarization Endpoint · Models - Dataloop https://dataloop.ai/library/model/philschmid_pyannote-speaker-diarization-endpoint/
+[40] Pyannote.ai https://www.pyannote.ai
+[41] Deploy a Hugging Face (PyAnnote) speaker diarization model on ... https://aws.amazon.com/blogs/machine-learning/deploy-a-hugging-face-pyannote-speaker-diarization-model-on-amazon-sagemaker-as-an-asynchronous-endpoint/
+[42] Pyannote https://pyannote.ai
+[43] pyannote.audio - PyPI https://pypi.org/project/pyannote.audio/2.1.1/
+[44] [PDF] Integrated System for Speaker Diarization and Intruder Detection ... https://ceur-ws.org/Vol-3654/paper19.pdf
+[45] Speech-Lab-IITM/speechbrain-1: A PyTorch-based Speech Toolkit https://github.com/Speech-Lab-IITM/speechbrain-1
+[46] Real-time diarization quickstart - Speech service - Azure AI services https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-started-stt-diarization
+[47] Detect different speakers in an audio recording - Google Cloud https://cloud.google.com/speech-to-text/docs/multiple-voices
+[48] speechbrain.inference.diarization module - Read the Docs https://speechbrain.readthedocs.io/en/latest/API/speechbrain.inference.diarization.html
