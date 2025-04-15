@@ -1,0 +1,166 @@
+
+
+Subject: Proposal to Optimize Wire Data Availability for WPPC Post Payment Callback – Delinking from Batch Container
+
+
+
+---
+
+Dear All,
+
+I am writing to formally highlight a critical delivery risk observed in the WPPC Wires Post Payment Callback data pipeline and to propose a technically feasible optimization that addresses downstream stability and timeliness issues, especially in the context of operational SLAs for time-sensitive use cases.
+
+
+---
+
+1. Background and Legacy Context
+
+Historically, the WPPC wires transactional data has been sourced from TTH (Teradata on Hadoop). However, due to the legacy nature and observed instability of the TTH platform (frequent timeouts, job retries, and compute saturation), it was flagged by the Stability Engineering Team as a high-risk integration point. Moreover, the data latency often extended into peak business hours, resulting in SLA breaches for the Ops Downstream Team that relies on data before 08:30 AM IST.
+
+To mitigate these issues, Team Alpha (Upstream) proposed migrating the source to a TIBCO Data Virtualization (TDV) exposed view, backed by the Enterprise Data Lake infrastructure.
+
+
+---
+
+2. Present Position – Risks Introduced by TDV Pipeline
+
+While TDV-based access has resolved platform stability concerns, we have now entered a new risk zone of delivery latency, primarily because the TDV-exposed data is only available post the upstream EOD batch process, which completes on average around 07:00 AM IST. This narrow processing window leaves us highly vulnerable to cascading delays, given the downstream systems' strict SLA and minimal buffer for retries or reconciliation.
+
+Key technical observations from root cause analysis:
+
+Job J1 is the final Impala write script responsible for persisting the wire transactions view used by TDV.
+
+J1 is nested within job container J2, a compound job that includes 6–7 unrelated processes (covering other asset classes and instruments) that must complete successfully before J1 is invoked.
+
+However, wire-specific data is ready by ~03:00 AM, well in advance. It currently waits idly for other non-dependent downstream flows (e.g., equity allocation, intraday batch replays) to complete before getting persisted.
+
+This is an unnecessary serialization in batch flow execution and introduces artificial latency.
+
+Additionally, wire transaction data is only available within Upstream’s Datalake scope, and there is no lineage or replication within the Wealth Management Technology domain, which limits our flexibility for proactive pull-based ingestion or fallback recovery.
+
+
+
+---
+
+3. Tentative Solution and Technical Recommendation
+
+We propose the following restructuring of the upstream data flow to mitigate delivery risk:
+
+Delink the wire data processing job from the J2 container and configure it to run independently and immediately after wire data is available (~03:00 AM).
+
+Job J1 (Impala write) can be scheduled as a standalone, early-triggered batch, which will:
+
+Materialize the required TDV view faster,
+
+Decouple dependencies on unrelated processes, and
+
+Provide a 3–4 hour buffer before the 08:30 AM consumption window.
+
+
+This can be achieved via:
+
+Creation of a dedicated sub-flow for wire data in the job orchestration tool (e.g., Autosys/Control-M),
+
+Use of a file-based or metadata-trigger when the wire source lands to initiate J1 directly, and
+
+Partial promotion of J1 output to a semi-persistent table/view layer, making it consumable by TDV on-demand.
+
+
+
+
+---
+
+4. Stakeholder Implications
+
+Upstream Datalake Team (Team Alpha):
+
+Needs to reconfigure orchestration dependencies and possibly promote a new early-morning pipeline variant.
+
+Must ensure the TDV view binding is updated to reflect the new source table (if changed).
+
+
+Downstream Ops Team:
+
+Will benefit from earlier and more reliable data delivery, increasing SLA compliance.
+
+
+Stability Engineering:
+
+Can close out open issues related to instability on TTH by marking TDV pipeline as primary.
+
+
+Wealth Management Tech:
+
+Needs to be aware that this data remains out-of-realm and thus relies on inter-domain SLA adherence.
+
+Consider future discussions on data ownership alignment or cross-domain visibility.
+
+
+
+
+---
+
+5. Action Items and Way Forward
+
+
+---
+
+6. Conclusion
+
+While the move to TDV is a step forward from a platform reliability perspective, we must not trade one risk (instability) for another (delivery timeliness). The proposed decoupling is minimal in engineering effort yet impactful in mitigating downstream SLA breaches and reducing operational firefighting. I strongly recommend prioritizing this change as part of the immediate release cycle or patch plan.
+
+Let me know if you'd like to set up a focused technical working session to go over flow dependencies, timelines, or risk points in more detail.
+
+Best regards,
+[Your Full Name]
+[Your Role]
+[Your Contact Info]
+
+
+---
+
+
+
+4. Stakeholder Implications (Updated)
+
+Upstream Datalake Team (Team Alpha):
+
+Needs to reconfigure orchestration dependencies and promote wire job into a decoupled pipeline.
+
+TDV view exposure must reflect the latest persisted target table, post-write.
+
+
+Downstream Ops Team: (New Content Added)
+
+You are looped in here to provide early visibility into an emerging risk that can impact data delivery timelines close to or beyond your SLA cut-off of 08:30 AM IST.
+
+The current architecture introduces systemic delay by waiting for unrelated upstream jobs before making wire data available.
+
+We recommend aligning on this risk with business stakeholders, especially given the time-critical nature of your workflow.
+
+Your support in influencing prioritization of this decoupling change with the upstream team will be key to securing stability and preventing daily run-time firefighting.
+
+
+Stability Engineering:
+
+Can treat this transition as closure of a flagged TTH platform risk, once the TDV-based flow is stabilized with new orchestration.
+
+
+Wealth Management Tech:
+
+No current access to upstream data lineage or visibility into wire flow – dependency continues on inter-domain SLA.
+
+Can consider cross-domain data availability strategy in the future if needed for auditing or resilience.
+
+
+
+
+---
+
+5. Action Items and Way Forward (No changes here, but Ops team implicitly involved in coordination)
+
+
+--
+
+
+
