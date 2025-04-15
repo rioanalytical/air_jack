@@ -1,0 +1,71 @@
+from datetime import datetime, timedelta
+import pandas as pd
+import calendar
+from dataiku.core.sql import SQLExecutor2
+
+today = datetime.today().date()
+
+# Month calculations
+month_start = today.replace(day=1)
+month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+
+# Previous month
+if today.month == 1:
+    prev_month_start = today.replace(year=today.year-1, month=12, day=1)
+else:
+    prev_month_start = today.replace(month=today.month-1, day=1)
+prev_month_end = prev_month_start.replace(day=calendar.monthrange(prev_month_start.year, prev_month_start.month)[1])
+
+# Quarter calculations
+quarter_start_month = ((today.month - 1) // 3) * 3 + 1
+quarter_start = today.replace(month=quarter_start_month, day=1)
+qtr_end_month = quarter_start_month + 2
+quarter_end_day = calendar.monthrange(today.year, qtr_end_month)[1]
+quarter_end = today.replace(month=qtr_end_month, day=quarter_end_day)
+
+# Previous quarter
+if quarter_start_month == 1:
+    last_qtr_start = today.replace(year=today.year-1, month=10, day=1)
+else:
+    last_qtr_start = today.replace(month=quarter_start_month - 3, day=1)
+last_qtr_end_month = last_qtr_start.month + 2
+last_qtr_end_day = calendar.monthrange(last_qtr_start.year, last_qtr_end_month)[1]
+last_qtr_end = last_qtr_start.replace(day=last_qtr_end_day)
+
+# Monthly and quarterly check after 5th
+is_after_5th = today.day >= 5
+is_qtr_start_month = today.month in [1, 4, 7, 10]
+is_after_5th_qtr = is_qtr_start_month and today.day >= 5
+
+# Check audit table
+executor = SQLExecutor2(dataset="model_metrics_audit_table")
+latest_metrics_date = executor.query_to_df("""
+    SELECT MAX(run_date) as max_date FROM model_metrics_audit_table
+    WHERE metric_type IN ('monthly', 'quarterly')
+""")["max_date"][0]
+last_metrics_date = pd.to_datetime(latest_metrics_date).date() if latest_metrics_date else None
+
+run_monthly = is_after_5th and (last_metrics_date is None or last_metrics_date < month_start)
+run_quarterly = is_after_5th_qtr and (last_metrics_date is None or last_metrics_date < quarter_start)
+
+# Data check (optional)
+latest_hist = executor.query_to_df("SELECT MAX(date_col) as max_date FROM history_table")["max_date"][0]
+latest_txn = executor.query_to_df("SELECT MAX(date_col) as max_date FROM transaction_table")["max_date"][0]
+data_ready = all(pd.to_datetime(d).date() >= today - timedelta(days=2) for d in [latest_hist, latest_txn])
+
+# Set scenario variables
+scenario_vars = {
+    "run_monthly": str(run_monthly and data_ready),
+    "run_quarterly": str(run_quarterly and data_ready),
+    "current_month_start": month_start.isoformat(),
+    "current_month_end": month_end.isoformat(),
+    "previous_month_start": prev_month_start.isoformat(),
+    "previous_month_end": prev_month_end.isoformat(),
+    "current_quarter_start": quarter_start.isoformat(),
+    "current_quarter_end": quarter_end.isoformat(),
+    "previous_quarter_start": last_qtr_start.isoformat(),
+    "previous_quarter_end": last_qtr_end.isoformat()
+}
+
+for k, v in scenario_vars.items():
+    scenario.set_variable(k, v)
