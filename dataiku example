@@ -268,3 +268,16 @@ A sample dashboard structure for participants to build upon
 
 This setup ensures all teams are evaluated fairly and comprehensively on their Dataiku + ML capability, project planning, and real-world applicability.
 
+
+
+
+We are hosting dataiku hackthon. This is to check the knowledge level of employees both in dataiku and machine learning.
+
+We are morgan stanley and the use case for hackathon should be fraud detection.
+
+Draft a problem statement for above in a detailed manner. Also create schema of multiple input tables required to solve this problem statement. We cannot provide live data so the tables should be synthetically generated.
+
+Also give hypothesis on which they can build the features for training model.
+
+Draft problem statement in such a way that is achievable in 2 days max. Test dataiku skils how they can use multiple components
+
