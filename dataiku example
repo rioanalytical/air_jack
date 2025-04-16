@@ -50,3 +50,221 @@ Time Estimate: 8 hours
 2 hours: Model training & tuning
 
 2 hours: Deployment & reporting
+
+
+
+
+
+Here’s the polished and final version of the Dataiku hackathon problem statement for Morgan Stanley, now incorporating advanced usage of Dataiku components such as visual recipes, AutoML, scenarios, dashboards, variables, and deployment best practices. It’s designed to evaluate end-to-end Dataiku proficiency and ML understanding within a 2-day challenge window, using synthetically provided data.
+
+
+---
+
+Dataiku Hackathon 2025: Synthetic Identity Fraud Detection
+
+Host: Morgan Stanley
+
+Platform: Dataiku DSS
+
+Duration: 2 Days
+
+Challenge Theme: Fraud Detection – Synthetic Identity Detection
+
+
+---
+
+Background & Business Context
+
+In the modern financial ecosystem, synthetic identity fraud is one of the fastest-growing threats. Fraudsters cleverly stitch together real and fake information—such as real SSNs with fabricated names and addresses—to create “synthetic” profiles that bypass traditional validation checks.
+
+As part of Morgan Stanley’s commitment to proactive fraud prevention, we challenge you to build an end-to-end fraud detection pipeline in Dataiku DSS, using a suite of pre-generated synthetic datasets. Your objective is to identify users who are likely synthetic identities and present a deployed scoring pipeline ready for inference.
+
+
+---
+
+Objective
+
+Use synthetic datasets provided by the organizers to:
+
+Engineer relevant features from multiple data tables
+
+Train a binary classification model to detect synthetic users
+
+Use Dataiku’s ML capabilities (Visual ML, Python, or AutoML) to build and evaluate models
+
+Develop a real-time or batch scoring pipeline
+
+Showcase your pipeline with dashboards, scenarios, variable usage, and proper project structure
+
+Deliver a project that mimics a real-world, production-ready fraud detection system
+
+
+
+---
+
+Provided Synthetic Datasets
+
+All datasets will be synthetically generated to simulate real-world structures while preserving privacy.
+
+
+---
+
+Expectations & Workflow in Dataiku
+
+Participants are expected to create a complete machine learning flow in Dataiku DSS, including:
+
+1. Data Preparation & Integration
+
+Use Visual Recipes (Join, Group, Filter, Window, Pivot) to merge and clean datasets
+
+Leverage Dataiku Variables for dynamic table filtering or pipeline configuration
+
+Perform missing value imputation, data validation, and type casting
+
+
+2. Feature Engineering
+
+Build derived features (e.g., transaction frequency, average credit utilization, geo mismatch)
+
+Use Prepare, Python, or R recipes for advanced feature generation
+
+Apply Window and Group recipes to engineer time-based or aggregation-based metrics
+
+
+3. Modeling
+
+Train a binary classifier using:
+
+Visual ML (AutoML) or custom models via Python Notebooks
+
+
+Run multiple models (Logistic Regression, Random Forest, XGBoost) and compare via the Evaluation Store
+
+Track metrics: ROC-AUC, Precision, Recall, F1-score, and Confusion Matrix
+
+
+4. Model Deployment & Inference
+
+Package your best-performing model for scoring
+
+Set up a Scoring Flow using a reusable model prediction recipe
+
+Build an inference pipeline to score new or unlabeled users
+
+
+5. Automation & Scheduling
+
+Use Scenarios to:
+
+Trigger retraining
+
+Refresh input data (simulate real-time ingestion)
+
+Deploy new model versions
+
+
+Configure email or Slack alerts for pipeline failures
+
+
+6. Dashboards & Monitoring
+
+Create Dashboards for:
+
+Feature importance and data quality stats
+
+Fraud probability distribution
+
+Model performance over time
+
+
+Use charts, pivot tables, and custom plots for interpretation
+
+
+
+---
+
+Feature Hypotheses to Explore
+
+Encourage creative feature engineering using domain-driven hypotheses:
+
+Demographic/Identity Level
+
+Age vs. credit profile mismatch
+
+Invalid or shared SSNs, suspicious phone/email patterns
+
+
+Transaction Patterns
+
+Unusual transaction volumes or types
+
+Location anomalies (far-off from registered address)
+
+Spikes in transaction frequency post account creation
+
+
+Access Behavior
+
+Multiple IP geolocations in short time
+
+System usage patterns that don’t match user type
+
+
+Cross-Domain
+
+Discrepancy between transaction and entitlement log locations
+
+Credit limit unusually high for user’s profile
+
+Entitlement log volume vs. number of transactions
+
+
+
+---
+
+Evaluation Criteria
+
+
+---
+
+Submission Requirements
+
+1. Dataiku Project Export (.zip) with:
+
+Fully functional flow
+
+Labeled scoring pipeline
+
+Dashboard(s) for insights
+
+Model(s) in the model registry or deployed node
+
+
+
+2. README (in Markdown or PDF) describing:
+
+Approach
+
+Features built
+
+Model selection rationale
+
+Business insights from dashboards
+
+
+
+
+
+---
+
+Let me know if you'd like:
+
+A Python script to generate the synthetic datasets
+
+A starter Dataiku project template (empty flow, datasets placeholders, naming conventions)
+
+A sample dashboard structure for participants to build upon
+
+
+This setup ensures all teams are evaluated fairly and comprehensively on their Dataiku + ML capability, project planning, and real-world applicability.
+
