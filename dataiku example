@@ -281,3 +281,64 @@ Also give hypothesis on which they can build the features for training model.
 
 Draft problem statement in such a way that is achievable in 2 days max. Test dataiku skils how they can use multiple components
 
+
+
+
+
+
+
+
+
+import pandas as pd
+import random
+from faker import Faker
+
+fake = Faker()
+
+# Load existing files
+user_profile_df = pd.read_csv("user_profile.csv")
+label_data_df = pd.read_csv("label_data.csv")
+
+# Merge for synthetic label access
+merged_df = user_profile_df.merge(label_data_df, on="user_id")
+
+# Pre-generate fraud-like artifacts
+shared_ssns = [fake.ssn() for _ in range(10)]
+reused_phones = [fake.phone_number() for _ in range(10)]
+temp_domains = ["tempmail.net", "fakeinbox.com", "mailnesia.com"]
+
+# Build enhanced user profile
+enhanced_profiles = []
+for _, row in merged_df.iterrows():
+    is_synthetic = row["is_synthetic"]
+
+    if is_synthetic:
+        ssn = random.choice(shared_ssns)
+        email = f"{fake.user_name()}{random.randint(100,999)}@{random.choice(temp_domains)}"
+        phone = random.choice(reused_phones)
+        dob = fake.date_of_birth(minimum_age=10, maximum_age=17)  # Unrealistic
+        reg_date = fake.date_between(start_date='-30d', end_date='today')  # Recent
+    else:
+        ssn = fake.ssn()
+        email = fake.email()
+        phone = fake.phone_number()
+        dob = fake.date_of_birth(minimum_age=18, maximum_age=90)
+        reg_date = fake.date_between(start_date='-2y', end_date='today')
+
+    enhanced_profiles.append({
+        "user_id": row["user_id"],
+        "full_name": row["full_name"],
+        "dob": dob,
+        "email": email,
+        "phone": phone,
+        "ssn": ssn,
+        "registration_date": reg_date,
+        "city": row["city"],
+        "state": row["state"]
+    })
+
+# Create DataFrame and save
+user_profile_df_v2 = pd.DataFrame(enhanced_profiles)
+user_profile_df_v2.to_csv("user_profile_v2.csv", index=False)
+
+
