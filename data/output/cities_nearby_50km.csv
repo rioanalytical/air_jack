@@ -1,0 +1,135 @@
+City,Nearby_City_within_50km
+New York,"Newark, NJ"
+London,Reading
+Tokyo,Yokohama
+Paris,Versailles
+Berlin,Potsdam
+Sydney,Wollongong
+Toronto,Hamilton
+San Francisco,Oakland
+Amsterdam,Haarlem
+Singapore,Johor Bahru
+Seoul,Incheon
+Dubai,Sharjah
+Zurich,Winterthur
+Vancouver,Abbotsford
+Melbourne,Geelong
+Stockholm,Uppsala
+Copenhagen,Roskilde
+Munich,Augsburg
+Hong Kong,Shenzhen
+Boston,Worcester
+Chicago,Naperville
+Barcelona,Tarragona
+Rome,Latina
+Vienna,Wiener Neustadt
+Brussels,Ghent
+Madrid,Toledo
+Oslo,Drammen
+Dublin,Drogheda
+Lisbon,Setúbal
+Prague,Pilsen
+Budapest,Székesfehérvár
+Warsaw,Radom
+Helsinki,Porvoo
+Reykjavik,Selfoss
+Auckland,Hamilton
+Montreal,Laval
+Mexico City,Toluca
+Buenos Aires,La Plata
+Sao Paulo,Campinas
+Cape Town,Stellenbosch
+Shanghai,Suzhou
+Beijing,Tianjin
+Jakarta,Bekasi
+Istanbul,Bursa
+Bangkok,Ayutthaya
+Kuala Lumpur,Klang
+Tel Aviv,Netanya
+Lima,Callao
+Bogota,Soacha
+Athens,Piraeus
+Edinburgh,Dunfermline
+Glasgow,Paisley
+Detroit,Ann Arbor
+Minneapolis,St. Paul
+Phoenix,Mesa
+Denver,Boulder
+Houston,Sugar Land
+Atlanta,Marietta
+Brisbane,Ipswich
+Adelaide,Gawler
+Perth,Mandurah
+Valencia,Castellón de la Plana
+Geneva,Lausanne
+Basel,Mulhouse
+Bern,Thun
+Luxembourg City,Esch-sur-Alzette
+Frankfurt,Wiesbaden
+Hamburg,Lübeck
+Stuttgart,Karlsruhe
+Dusseldorf,Essen
+Birmingham,Coventry
+Manchester,Bolton
+Leeds,Bradford
+Nottingham,Derby
+Ljubljana,Kranj
+Tallinn,Tartu
+Riga,Jelgava
+Vilnius,Kaunas
+Bratislava,Trnava
+Hague,Delft
+Rotterdam,Dordrecht
+Utrecht,Amersfoort
+Malmo,Lund
+Gothenburg,Borås
+Turku,Salo
+Monaco,Nice
+San Marino,Rimini
+Andorra la Vella,La Seu d'Urgell
+Vaduz,Chur
+Osaka,Kobe
+Yokohama,Kawasaki
+Kyoto,Nara
+Canberra,Queanbeyan
+Wellington,Lower Hutt
+Calgary,Airdrie
+Ottawa,Gatineau
+Quebec City,Lévis
+Halifax,Dartmouth
+San Diego,Chula Vista
+Seattle,Tacoma
+Portland,"Vancouver, WA"
+Salt Lake City,Ogden
+Austin,Round Rock
+Raleigh,Durham
+Charlotte,Concord
+Dallas,Fort Worth
+Philadelphia,"Camden, NJ"
+Pittsburgh,Greensburg
+Columbus,"Newark, OH"
+Indianapolis,Carmel
+Milwaukee,Waukesha
+Madison,Janesville
+Cincinnati,"Covington, KY"
+Nashville,Murfreesboro
+San Jose,Sunnyvale
+Sacramento,Roseville
+Edmonton,St. Albert
+Winnipeg,Steinbach
+Victoria,Saanich
+Montpellier,Nîmes
+Lyon,Villeurbanne
+Toulouse,Albi
+Nice,Antibes
+Nantes,Saint-Nazaire
+Bordeaux,Mérignac
+Strasbourg,Haguenau
+Lagos,Ikorodu
+Rio de Janeiro,Niterói
+Moscow,Khimki
+Nairobi,Thika
+Dhaka,Narayanganj
+Manila,Quezon City
+Bogotá,Soacha
+Miami,Fort Lauderdale
