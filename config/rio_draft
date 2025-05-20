@@ -1,0 +1,71 @@
+Describe changes from prior role
+In my previous role as Director, my responsibilities were largely centered around fraud model development, with a focus on building and refining machine learning models based on structured transactional data. While I contributed to strategic discussions and model enhancements, the focus was narrower—typically within the boundaries of implementation and enhancement.
+
+In my current capacity, considered for Senior Director / AVP, my role has significantly expanded in scope, complexity, and leadership responsibilities:
+
+Strategic Ownership: I now lead end-to-end development of fraud detection solutions, including ideation, architecture, supervised model development, deployment, explainability, scoring pipeline enablement, and model monitoring.
+
+Stakeholder Engagement: I work closely with Fraud Leadership to translate complex fraud problems into clearly defined use cases, and then design and deliver robust, scalable solutions aligned with business goals.
+
+Expanded Influence: Beyond execution, I contribute to the foresight and visioning of future capabilities, proactively identifying evolving fraud vectors and shaping our modeling and platform strategy in collaboration with the team.
+
+Mentorship and Enablement: I actively mentor junior team members, providing a safe, supervised space to innovate, while offering guidance and oversight to help them grow into leadership roles.
+
+Complexity
+Architecting and Leading the Fraud Check Model Initiative
+
+Scope: I led the end-to-end design and deployment of a sophisticated fraud check model pipeline, integrating data from multiple sources and aligning closely with fraud operational needs.
+
+Complexity: Required deep judgment in model architecture, balancing detection precision with latency, while also integrating model explainability and production monitoring frameworks.
+
+Example: Designed and deployed a model that flags anomalous client behavior based on entitlement usage, channel activity, and demographic anomalies — now a key input into Wealth Management fraud alerts.
+
+End-to-End Development Ownership of RDFI Alerts
+
+Scope: Took complete ownership of the RDFI fraud alerting system, including use case framing, data sourcing, model development, rules layering, and post-deployment monitoring.
+
+Complexity: Required navigating fragmented data, aligning with operations teams, and delivering high-impact alerts within tight SLAs.
+
+Example: System now generates dynamic alerts for suspicious inbound transactions, enabling faster and more accurate fraud triage.
+
+Innovation in Contact Center Fraud Detection PoC
+
+Scope: Proposed and developed a PoC model for detecting contact center fraud patterns by analyzing voice behavior, metadata, and access history.
+
+Complexity: Required cross-disciplinary ideation, working across voice analytics, fraud typologies, and behavioral modeling.
+
+Impact: The innovation was recognized by senior leadership and secured funding for production buildout this year.
+
+Model Optimization and Modernization Efforts
+
+Scope: Led refactoring efforts for existing models, such as the Client Vulnerability Model, in response to concept drift and data quality issues.
+
+Complexity: Involved reassessment of modeling assumptions, retraining, and realigning with evolving regulatory and business requirements.
+
+Example: Improved model performance and relevance by redesigning features and incorporating new signals that reflect today’s client behavior.
+
+Peer Positions
+Risk Modeling Lead (Operational Risk Analytics, WM Risk Division)
+
+Comparable Scope: Similar end-to-end ownership of high-impact models that inform risk posture and regulatory response.
+
+Complexity Match: Engages in advanced modeling, stakeholder management, and continuous tuning of model performance.
+
+Accountability: Responsible for actionable insights that impact surveillance operations and internal audits, similar to fraud model accountability.
+
+Data Engineering Lead (Fraud Detection Systems Modernization)
+
+Comparable Scope: Leads modernization and resiliency upgrades (e.g., Spark/Python upgrades, cloud enablement) akin to my participation in cross-squad initiatives.
+
+Complexity Match: Handles architectural decisions and ensures performance/scalability under regulatory and operational constraints.
+
+Accountability: Shared responsibility for system stability and availability of fraud analytics.
+
+Surveillance Strategy Lead (Client Supervision Analytics)
+
+Comparable Scope: Works closely with compliance and fraud ops to enhance detection capabilities across client communication and transaction streams.
+
+Complexity Match: Similar decision-making pressure and use of advanced analytics and modeling to identify sophisticated abuse patterns.
+
+Accountability: Outcomes of their models affect compliance decisions and client escalations, as do mine in fraud intervention.
+
