@@ -1,0 +1,57 @@
+import dataiku
+import pandas as pd
+from sklearn.metrics import (
+    f1_score, accuracy_score, precision_score, recall_score,
+    confusion_matrix, classification_report, roc_auc_score
+)
+
+# Read input dataset
+input_dataset = dataiku.Dataset("your_scored_dataset_name")
+df = input_dataset.get_dataframe()
+
+# Replace these with your actual column names
+y_true = df['actual']
+y_pred = df['prediction']
+
+# Optional: if probabilities exist and you're doing binary classification
+# y_prob = df['probability_column']  # Uncomment if applicable
+
+# Compute basic metrics
+accuracy = accuracy_score(y_true, y_pred)
+precision = precision_score(y_true, y_pred, average='binary', zero_division=0)
+recall = recall_score(y_true, y_pred, average='binary', zero_division=0)
+f1 = f1_score(y_true, y_pred, average='binary', zero_division=0)
+
+# If multiclass, change `average='binary'` to `average='macro'` or `average='weighted'`
+
+# Confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+cm_df = pd.DataFrame(cm, index=["Actual_0", "Actual_1"], columns=["Pred_0", "Pred_1"])
+
+# Classification report as DataFrame
+report_dict = classification_report(y_true, y_pred, output_dict=True, zero_division=0)
+report_df = pd.DataFrame(report_dict).transpose().reset_index().rename(columns={"index": "class"})
+
+# Optional: ROC-AUC if probability column exists
+# roc_auc = roc_auc_score(y_true, y_prob)
+
+# Print metrics
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+# print("ROC-AUC:", roc_auc)
+
+# Output to Dataiku (single-row summary table)
+summary_df = pd.DataFrame([{
+    'accuracy': accuracy,
+    'precision': precision,
+    'recall': recall,
+    'f1_score': f1,
+    # 'roc_auc': roc_auc  # Uncomment if applicable
+}])
+
+# Write outputs
+dataiku.Dataset("model_metrics_summary").write_with_schema(summary_df)
+dataiku.Dataset("confusion_matrix").write_with_schema(cm_df)
+dataiku.Dataset("classification_report").write_with_schema(report_df)
