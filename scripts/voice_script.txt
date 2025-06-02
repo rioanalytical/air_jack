@@ -1,28 +1,19 @@
-client trust is paramount, especially within the Wealth Management space where we manage highly sensitive, high-value accounts. Our contact centers act as a critical touchpoint for client interactions — but they’re also a target for social engineering and identity-based fraud.
+The first layer is a behavioral ML model, built using internal transaction and profile data. It captures each client’s normal financial activity and interaction style — such as transfer patterns, investment behavior, time-of-day activity, and risk indicators.
 
-Currently, the firm uses Pindrop, a vendor-based solution that leverages voice biometrics and risk signals to identify anomalies. While it's a strong first layer of defense, it doesn’t provide holistic context — such as how a client typically behaves, what their financial activity looks like, or the deeper semantic meaning of their conversations.
+Any deviation — for example, a large fund transfer request from an unusual location or time — is flagged by the model as potentially risky.
 
-This limitation leaves a gap — a blind spot — that sophisticated fraudsters are increasingly exploiting.
+This domain intelligence helps differentiate a legitimate client from an imposter who may have access to personal information but lacks behavioral alignment.
 
+[Slide 6: Component 2 – LLM-Based Intent & Linguistic Signals]
+Speaker:
+The second component uses Large Language Models (LLMs) to analyze call transcripts.
 
-  Across the industry, contact center fraud has been growing at 30–40% year over year, with attackers often exploiting weak links in client verification or voice spoofing. It's estimated that hundreds of millions are lost annually, not to mention the reputational damage and loss of trust that follow each incident.
+We extract the intent of the conversation, along with subtle indicators of manipulation — such as urgency cues ("I need this now"), evasive behavior, inconsistent terminology, and attempts to bypass security.
 
-For our high-net-worth clients, even a single breach could translate into devastating consequences — not just financial, but emotional and relational.
+These features are then fed into a lightweight ML model to generate a fraud intent risk score. This helps us detect even when the voice may match, but intentions don’t.
 
+[Slide 7: Component 3 – Voice Analytics]**
+Speaker:
+Lastly, we add voice-layer intelligence — analyzing voice biometrics, tonality, stress levels, background noise patterns, and MFCC (Mel-Frequency Cepstral Coefficients) to assess speaker identity and emotional state.
 
-
-
-
-  Introduction: The Morgan Stanley Wealth Management Client Service Center
-At Morgan Stanley Wealth Management, our Client Service Centers (often referred to simply as "call centers") serve as a critical and primary touchpoint for our affluent clients. These centers are far more than just "help desks"; they are integral to delivering the white-glove service and comprehensive support that our clients expect and deserve.
-
-Our dedicated team of financial service professionals within these centers handles a vast array of client inquiries and transactions, including:
-
-Detailed Account Information: Providing real-time updates on balance details, portfolio holdings, stock quotes, and recent account activities.
-Personal and Account Updates: Assisting with changes like updating a client's address or reordering checks.
-Transaction Processing: Facilitating transfers, wire requests, bill payments, and managing various other financial transactions.
-Product and Service Support: Offering insights into our diverse investment products and wealth management solutions, and assisting with online access issues.
-Problem Resolution: Addressing and resolving any client concerns or issues efficiently and effectively.
-
-In essence, the Client Service Centers are the voice of Morgan Stanley Wealth Management, directly impacting client satisfaction, loyalty, and trust. Given the sensitive nature of financial information and the significant value of the assets under management, ensuring the absolute security and integrity of every client interaction is paramount. This makes the Client Service Center a prime target for sophisticated fraudsters, necessitating robust security measures to protect both our clients and the firm.
-
+This component allows for real-time bio-verification, emotion detection, and even cartel pattern recognition — identifying repeat offenders using similar tools or scripts across different calls.
