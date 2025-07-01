@@ -1,0 +1,61 @@
+| Type        | Description                                                 | Characteristics                            |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------ |
+| **Dev**     | Long-term, strategic work like new models, rules, pipelines | High value, often spans quarters           |
+| **Hygiene** | Tech debt, upgrades, OSS issues, infra migration            | Non-glamorous, necessary, often time-bound |
+| **Adhoc**   | Audit requests, investigation spikes                        | Reactive, deadline-driven, unpredictable   |
+
+
+
+
+
+| Initiative                | Type    | Owner   | Due Date | Business Impact (H/M/L) | Effort Estimate (S/M/L) | Dependencies | Notes               |
+| ------------------------- | ------- | ------- | -------- | ----------------------- | ----------------------- | ------------ | ------------------- |
+| Upgrade to Python 3.11    | Hygiene | DevOps  | 15-Aug   | Medium                  | M                       | Platform     | Mandatory migration |
+| New check forgery model   | Dev     | ML      | -        | High                    | L                       | Data team    | Phase 1 Q3          |
+| Audit request - KYB cases | Adhoc   | Analyst | 05-July  | High                    | S                       | Compliance   | Non-negotiable      |
+
+
+
+
+3. Apply Scoring to Each Item
+Suggested Scoring Factors:
+Business Value: 1 (Low) to 5 (High)
+
+Urgency/Deadline Criticality: 1 (Low flexibility) to 5 (Hard deadline)
+
+Effort: 1 (High Effort) to 5 (Low Effort)
+
+Team Fit: 1 (Needs niche skill) to 5 (Can be done by most)
+
+Create a weighted formula:
+
+text
+Copy
+Edit
+Score = (0.4 * Business Value) + (0.3 * Urgency) + (0.2 * Team Fit) + (0.1 * Effort)
+Sort initiatives by descending score. Hygiene and adhoc will score high on urgency; dev will score high on business value.
+
+
+
+
+
+4. Visualize Capacity Allocation
+Fix % allocations per category based on history and Q3 knowns:
+
+Dev: 50% (focus on impact-driving projects)
+
+Hygiene: 30% (time-boxed and non-negotiable)
+
+Adhoc: 20% (buffer for surprise audits or fraud spikes)
+
+Use a visual roadmap or calendar block to show when each item is slotted.
+
+
+Final Output 
+
+| Priority | Initiative                  | Category | Owner   | Q3 Slot   | Rationale                          |
+| -------- | --------------------------- | -------- | ------- | --------- | ---------------------------------- |
+| P1       | KYB Audit Support           | Adhoc    | Analyst | July Wk 1 | High urgency, legal non-negotiable |
+| P2       | Data Ingestion Enhancements | Dev      | Engg    | July-Aug  | Enables downstream fraud detection |
+| P3       | Python 3.11 Migration       | Hygiene  | DevOps  | Aug       | Platform support ends Sept         |
+| P4       | Check Forgery Phase-1 Model | Dev      | ML Team | Aug–Sept  | High value, needs Q3 momentum      |
