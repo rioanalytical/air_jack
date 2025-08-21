@@ -1,23 +1,25 @@
 import dataiku
 from flask import send_file
 import os
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
+from evidently.dashboard import Dashboard
+from evidently.dashboard.tabs import DataDriftTab
 import pandas as pd
 
-# Optional: set a temp file path
+# Output path for HTML report
 REPORT_PATH = "/tmp/evidently_report.html"
 
 @app.route('/generate_report')
 def generate_report():
-    # Load datasets (adjust names as needed)
-    ref_dataset = dataiku.Dataset("reference_dataset").get_dataframe()
-    cur_dataset = dataiku.Dataset("current_dataset").get_dataframe()
+    # Load datasets from Dataiku
+    reference_df = dataiku.Dataset("reference_dataset").get_dataframe()
+    current_df = dataiku.Dataset("current_dataset").get_dataframe()
 
-    # Create the report
-    report = Report(metrics=[DataDriftPreset()])
-    report.run(reference_data=ref_dataset, current_data=cur_dataset)
+    # Create a dashboard with Data Drift tab
+    dashboard = Dashboard(tabs=[DataDriftTab()])
+    dashboard.calculate(reference_df, current_df)
 
-    # Save report to HTML
-    report.save_html(REPORT_PATH)
+    # Save the dashboard to an HTML file
+    dashboard.save(REPORT_PATH)
+
+    # Return the HTML file for rendering
     return send_file(REPORT_PATH, mimetype='text/html')
