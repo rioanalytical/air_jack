@@ -1,49 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Data and ML Evals: Hello World</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Full Evidently Drift Report</title>
+    <style>
+        #driftIframe {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h1>Evidently Data Drift (PSI) Evaluation - Iris Sample</h1>
-    <button id="evaluateBtn">Run Evaluation</button>
-    <div id="metrics"></div>
-    <div id="charts"></div>
+    <h1>Evidently Data Drift Report (Full HTML)</h1>
+    <button onclick="loadDriftReport()">Show Drift Report</button>
+    <iframe id="driftIframe" style="display:none;"></iframe>
     <script>
-        document.getElementById('evaluateBtn').onclick = function() {
-            fetch('/run_eval', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                // Display top-level summary
-                let metricsDiv = document.getElementById('metrics');
-                let metricsHtml = "<h2>Data Drift Results</h2><ul>";
-                if(data.result && data.result.metrics) {
-                    // Extract Data Drift and PSI results
-                    let drift_metric = data.result.metrics.find(m => m.metric === "DataDriftPreset");
-                    if(drift_metric && drift_metric.result) {
-                        for(const col in drift_metric.result['drift_by_columns']) {
-                            metricsHtml += `<li>${col}: PSI=${drift_metric.result['drift_by_columns'][col].psi.toFixed(3)}</li>`;
-                        }
-                    }
-                }
-                metricsHtml += "</ul>";
-                metricsDiv.innerHTML = metricsHtml;
-
-                // Optionally show plots for one column (e.g. sepal length)
-                let drift_metric = data.result && data.result.metrics ? data.result.metrics.find(m => m.metric === "DataDriftPreset") : null;
-                if (drift_metric && drift_metric.result && drift_metric.result['drift_by_columns']["sepal length (cm)"]) {
-                    let psi_hist = drift_metric.result['drift_by_columns']["sepal length (cm)"].drift_hist;
-                    if (psi_hist) {
-                        Plotly.newPlot('charts', [{
-                            x: psi_hist[0],
-                            y: psi_hist[1],
-                            type: 'bar',
-                            name: "Sepal Length Drift"
-                        }], {title: "Sepal Length (cm) Drift"});
-                    }
-                }
-            });
-        };
+        function loadDriftReport() {
+            var iframe = document.getElementById('driftIframe');
+            iframe.style.display = "block";
+            iframe.src = "/drift_html";
+        }
     </script>
 </body>
 </html>
