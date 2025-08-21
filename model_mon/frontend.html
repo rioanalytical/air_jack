@@ -1,10 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Evidently Report</title>
+    <title>Evidently Metrics Dashboard</title>
+    <!-- Load Plotly.js for charts -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <h1>Evidently Report</h1>
-    <iframe src="/backend/generate_report" width="100%" height="800px"></iframe>
+    <h1>Metrics Dashboard (TPR, PSI, etc.)</h1>
+    <button id="fetchBtn">Fetch Metrics</button>
+    <div id="metrics"></div>
+    <div id="visualization"></div>
+
+    <script>
+        document.getElementById('fetchBtn').onclick = function() {
+            fetch('/compute_metrics', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show metrics summary
+                let metricsDiv = document.getElementById('metrics');
+                let metricsHtml = "<h2>Metrics Summary</h2><ul>";
+
+                // Extract TPR from ClassificationQualityMetric
+                if (data.metrics) {
+                    let classQuality = data.metrics.find(m => m.metric === 'ClassificationQualityMetric');
+                    if (classQuality && classQuality.result) {
+                        metricsHtml += `<li>True Positive Rate (TPR): ${classQuality.result.true_positive_rate}</li>`;
+                    }
+
+                    // Extract PSI
+                    let psi = data.metrics.find(m => m.metric === 'PopulationStabilityIndex');
+                    if (psi && psi.result) {
+                        metricsHtml += `<li>Population Stability Index (PSI): ${psi.result.value}</li>`;
+                    }
+                }
+
+                metricsHtml += "</ul>";
+                metricsDiv.innerHTML = metricsHtml;
+
+                // Plot PSI distribution if available
+                let psi = data.metrics ? data.metrics.find(m => m.metric === 'PopulationStabilityIndex') : null;
+                if (psi && psi.result && psi.result.histogram) {
+                    let psiData = psi.result.histogram;
+                    var trace = {
+                        x: psiData.bins,
+                        y: psiData.counts,
+                        type: 'bar'
+                    };
+                    Plotly.newPlot('visualization', [trace], {title: "PSI Distribution"});
+                } else {
+                    document.getElementById('visualization').innerHTML = "<p>No PSI histogram available.</p>";
+                }
+            });
+        };
+    </script>
 </body>
 </html>
