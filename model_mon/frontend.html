@@ -1,56 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Evidently Metrics Dashboard</title>
-    <!-- Load Plotly.js for charts -->
+    <title>Data and ML Evals: Hello World</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <h1>Metrics Dashboard (TPR, PSI, etc.)</h1>
-    <button id="fetchBtn">Fetch Metrics</button>
+    <h1>Evidently Data Drift (PSI) Evaluation - Iris Sample</h1>
+    <button id="evaluateBtn">Run Evaluation</button>
     <div id="metrics"></div>
-    <div id="visualization"></div>
-
+    <div id="charts"></div>
     <script>
-        document.getElementById('fetchBtn').onclick = function() {
-            fetch('/compute_metrics', {
-                method: 'POST',
-            })
+        document.getElementById('evaluateBtn').onclick = function() {
+            fetch('/run_eval', { method: 'POST' })
             .then(response => response.json())
             .then(data => {
-                // Show metrics summary
+                // Display top-level summary
                 let metricsDiv = document.getElementById('metrics');
-                let metricsHtml = "<h2>Metrics Summary</h2><ul>";
-
-                // Extract TPR from ClassificationQualityMetric
-                if (data.metrics) {
-                    let classQuality = data.metrics.find(m => m.metric === 'ClassificationQualityMetric');
-                    if (classQuality && classQuality.result) {
-                        metricsHtml += `<li>True Positive Rate (TPR): ${classQuality.result.true_positive_rate}</li>`;
-                    }
-
-                    // Extract PSI
-                    let psi = data.metrics.find(m => m.metric === 'PopulationStabilityIndex');
-                    if (psi && psi.result) {
-                        metricsHtml += `<li>Population Stability Index (PSI): ${psi.result.value}</li>`;
+                let metricsHtml = "<h2>Data Drift Results</h2><ul>";
+                if(data.result && data.result.metrics) {
+                    // Extract Data Drift and PSI results
+                    let drift_metric = data.result.metrics.find(m => m.metric === "DataDriftPreset");
+                    if(drift_metric && drift_metric.result) {
+                        for(const col in drift_metric.result['drift_by_columns']) {
+                            metricsHtml += `<li>${col}: PSI=${drift_metric.result['drift_by_columns'][col].psi.toFixed(3)}</li>`;
+                        }
                     }
                 }
-
                 metricsHtml += "</ul>";
                 metricsDiv.innerHTML = metricsHtml;
 
-                // Plot PSI distribution if available
-                let psi = data.metrics ? data.metrics.find(m => m.metric === 'PopulationStabilityIndex') : null;
-                if (psi && psi.result && psi.result.histogram) {
-                    let psiData = psi.result.histogram;
-                    var trace = {
-                        x: psiData.bins,
-                        y: psiData.counts,
-                        type: 'bar'
-                    };
-                    Plotly.newPlot('visualization', [trace], {title: "PSI Distribution"});
-                } else {
-                    document.getElementById('visualization').innerHTML = "<p>No PSI histogram available.</p>";
+                // Optionally show plots for one column (e.g. sepal length)
+                let drift_metric = data.result && data.result.metrics ? data.result.metrics.find(m => m.metric === "DataDriftPreset") : null;
+                if (drift_metric && drift_metric.result && drift_metric.result['drift_by_columns']["sepal length (cm)"]) {
+                    let psi_hist = drift_metric.result['drift_by_columns']["sepal length (cm)"].drift_hist;
+                    if (psi_hist) {
+                        Plotly.newPlot('charts', [{
+                            x: psi_hist[0],
+                            y: psi_hist[1],
+                            type: 'bar',
+                            name: "Sepal Length Drift"
+                        }], {title: "Sepal Length (cm) Drift"});
+                    }
                 }
             });
         };
