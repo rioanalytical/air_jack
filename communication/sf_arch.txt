@@ -1,0 +1,125 @@
+I hope this message finds you well.
+
+As part of our firm-wide initiative to modernize data platforms and align with the latest data governance standards, we are planning to migrate our fraud analytics workflows – including the generation and dissemination of alerts – from Hadoop to Snowflake, beginning early next year.
+
+Current Mechanism & Limitations
+
+Today, the Fraud Analytics team shares alert data with Fraud Tech by placing the alert_feed_file on the Fraud Tech NAS. This file is then picked up and ingested to make alerts available on the Actimize UI for investigators.
+
+While this process has served us historically, it is based on a legacy file-based exchange mechanism, which, per our understanding, is not aligned with current best practices for secure and efficient data sharing.
+
+Upcoming Policy Constraints with Snowflake Migration
+
+With the move to Snowflake, several new firm-wide data policies come into effect, including:
+
+No replication or extraction of data from Snowflake into external file systems unless explicitly approved by Data Governance.
+
+Strict adherence to “One Data Policy/Model”, which mandates that Snowflake should serve as the single source of truth for analytics and downstream consumption.
+
+As a result, continuing the current approach of exporting CSV files and placing them in NAS for ingestion would violate firm policy and is not a sustainable option going forward.
+
+Proposal & Recommended Next Steps
+
+We propose a shift to more scalable and policy-compliant mechanisms for data exchange. Specifically, as we roll out the RDFI_Etrade Controls as a pilot in Snowflake, we believe this project presents a timely opportunity for Fraud Tech to begin adapting to the new architecture.
+
+We recommend the following options for your consideration:
+
+Option 1: Direct Access to Snowflake Tables
+
+* Fraud Tech gains read access to our Snowflake alert tables.
+
+* Integration is orchestrated via TWS (our job scheduler), with dependency hooks to ensure data readiness.
+
+* This model aligns fully with our data governance policy and ensures real-time or near real-time availability of data.
+
+Option 2: Kafka-Based Integration
+
+* We publish alerts to a Kafka queue post-generation.
+
+* Fraud Tech can subscribe to this queue and ingest data directly.
+
+* This model suits near real-time streaming use cases and supports scalability across multiple consumers.
+
+Action Required
+
+We request that Fraud Tech leadership initiates technical assessment and design activities starting now, in order to:
+
+Evaluate both proposed options in terms of feasibility, scalability, and resource requirements.
+
+Draft a future-state ingestion architecture aligned with Snowflake integration principles.
+
+Collaborate with us during the RDFI_Etrade pilot to establish and validate the new ingestion pathway.
+
+We are happy to support working sessions to further detail the options and address any technical questions your teams may have. Our goal is to ensure that the updated data exchange mechanism is in place, tested, and compliant well ahead of the full migration in early 2026.
+
+Looking forward to your thoughts and next steps.
+
+Best regards,
+[Your Full Name]
+Fraud Analytics Team
+[Your Contact Info]
+
+
+
+
+
+
+1. Batch Latency & Inflexibility
+
+Problem: File-based exchanges operate in fixed intervals (e.g., hourly or daily batches), which results in data lag between alert generation and availability for investigation.
+
+Impact: Investigators may be working with stale data, missing early opportunities to act on real-time fraud signals.
+
+2. Tight Coupling to Physical Infrastructure
+
+Problem: Reliance on NAS locks the solution into on-premise infrastructure, which does not scale well and isn't suited for cloud-native platforms like Snowflake.
+
+Impact: As the firm continues its cloud modernization efforts, this coupling creates technical debt and blocks progress toward platform-agnostic solutions.
+
+3. Poor Data Lineage & Governance
+
+Problem: Once data is exported to a CSV file, there is no visibility into how it is used, shared, or modified outside Snowflake.
+
+Impact: Violates data governance policies, hinders regulatory compliance (e.g., audit trails, data retention policies), and introduces data ownership ambiguities.
+
+4. Operational Overhead & Fragility
+
+Problem: Monitoring file drops and pickups often involves custom scripts or manual intervention, increasing the risk of errors, missed files, or delays.
+
+Impact: Frequent support tickets, rerun requirements, and reliability issues — especially during upstream or downstream failures.
+
+5. Security & Data Leakage Risks
+
+Problem: Exported files sitting on shared NAS directories are vulnerable to unauthorized access, misconfiguration, or accidental exposure.
+
+Impact: This increases data leakage risk and may be non-compliant with the firm’s data classification and handling standards.
+
+6. No Schema Enforcement or Validation
+
+Problem: File-based workflows typically lack schema enforcement, making them prone to format mismatches, missing fields, or downstream ingestion failures.
+
+Impact: Data quality becomes a persistent issue, especially during release cycles or changes in alert logic.
+
+7. Limited Scalability & High Latency for Large Files
+
+Problem: As data volumes grow, file creation, transfer, and ingestion times increase significantly.
+
+Impact: Results in processing bottlenecks, high I/O costs, and a degraded user experience for fraud investigators.
+
+8. Incompatibility with Modern Orchestration & Dependency Management
+
+Problem: Current architecture provides no seamless way to enforce upstream-downstream job dependencies, leading to race conditions or misaligned schedules.
+
+Impact: Makes it difficult to enforce SLAs or guarantee consistent availability of alerts in the Actimize UI.
+
+9. Duplicative Storage & Data Redundancy
+
+Problem: File exports create redundant data silos outside the core data platform (e.g., Snowflake), increasing storage footprint and management complexity.
+
+Impact: Violates the “One Data Policy” and introduces inconsistencies across systems.
+
+10. Delayed Troubleshooting & Root Cause Analysis
+
+Problem: When issues arise (e.g., missing alerts), tracing the problem across multiple hops (Snowflake → File → NAS → Actimize) is time-consuming and error-prone.
+
+Impact: Extended incident resolution times and difficulty in maintaining system health visibility.
