@@ -1,0 +1,45 @@
+. Data Lineage and Traceability
+
+Materialized Table:
+A materialized table inherently captures and preserves data at a specific point in time, enabling accurate tracking of data lineage. When implemented with SCD (Slowly Changing Dimension) logic—particularly SCD Type 2—it allows for historical traceability, showing how data evolved over time.
+
+View:
+A view, being ephemeral and dynamic, always reflects the latest state of the underlying source tables. There is no persistent record of what the data looked like at any prior point in time. This makes lineage tracking impossible unless it is explicitly engineered into each underlying source (which is rarely feasible or reliable at scale).
+
+🟢 Advantage: Materialized Table
+You gain full lineage and the ability to associate each record with a processing date, version, or batch.
+
+📌 2. Support for SCD Logic
+
+Materialized Table:
+Ideal for implementing SCD Type 2, where every change in source data generates a new version of the record, along with metadata like effective dates or flags (e.g., is_current, start_date, end_date). This allows point-in-time reconstruction and supports audit/compliance scenarios.
+
+View:
+Views cannot natively support SCD logic in a performant and reliable way. Simulating SCD2 behavior inside a view would require complex SQL (e.g., window functions, timestamp tracking), which is computationally expensive and volatile. Also, no historical state is preserved.
+
+🟢 Advantage: Materialized Table
+Only a materialized table can retain historical versions of data for accurate change tracking.
+
+📌 3. Audit & Compliance Readiness
+
+Materialized Table:
+In an audit scenario, you can easily provide historical snapshots, trace changes over time, and reproduce exactly what a report or dashboard showed on a given date. This is essential for regulatory reporting, especially in finance, healthcare, or government sectors.
+
+View:
+Since views are built on-the-fly from live data, it's impossible to recreate past data states unless all underlying sources also store historical versions. Even then, reconstructing exact historical outputs from multiple sources becomes fragile and error-prone.
+
+🟢 Advantage: Materialized Table
+You can confidently support data audits, reconstructions, and compliance checks.
+
+📌 4. Ephemeral Nature of Views
+
+Views are not designed for durability. They represent logic, not persisted data.
+
+Once source tables change, previous states are lost, and downstream queries will reflect updated content, even if incorrect or inconsistent.
+
+If any of the three underlying tables in your logic are changed or dropped, the view breaks or returns incorrect results.
+
+🟢 Advantage: Materialized Table
+It serves as a frozen, auditable artifact, even if upstream sources change or are retired.
+
+🧾 Final Recommendation
