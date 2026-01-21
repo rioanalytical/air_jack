@@ -1,0 +1,325 @@
+import pandas as pd
+import numpy as np
+from rapidfuzz import fuzz, process
+import re
+from collections import defaultdict
+from datetime import datetime
+import multiprocessing as mp
+from functools import partial
+
+class EmployeeFraudDetector:
+    """
+    Multi-stage fuzzy matching system for detecting employee fraud in transactions.
+    Optimized for 10M daily transactions against 70K employees.
+    """
+    
+    def __init__(self, employee_df):
+        """
+        Initialize with employee data and build lookup structures.
+        
+        Args:
+            employee_df: DataFrame with columns [emp_id, first_name, last_name, middle_name, ...]
+        """
+        self.employee_df = employee_df.copy()
+        self._preprocess_employees()
+        self._build_lookup_structures()
+        
+    def _preprocess_employees(self):
+        """Normalize and prepare employee names for matching."""
+        # Create standardized full names
+        self.employee_df['full_name'] = (
+            self.employee_df['first_name'].fillna('') + ' ' + 
+            self.employee_df['middle_name'].fillna('') + ' ' + 
+            self.employee_df['last_name'].fillna('')
+        ).str.strip()
+        
+        # Normalized version (lowercase, no special chars)
+        self.employee_df['normalized_name'] = self.employee_df['full_name'].apply(
+            self._normalize_name
+        )
+        
+        # Create name variations
+        self.employee_df['first_last'] = (
+            self.employee_df['first_name'].fillna('') + ' ' + 
+            self.employee_df['last_name'].fillna('')
+        ).str.strip()
+        
+        self.employee_df['last_first'] = (
+            self.employee_df['last_name'].fillna('') + ' ' + 
+            self.employee_df['first_name'].fillna('')
+        ).str.strip()
+        
+        # First initial + last name
+        self.employee_df['initial_last'] = (
+            self.employee_df['first_name'].str[0].fillna('') + ' ' + 
+            self.employee_df['last_name'].fillna('')
+        ).str.strip()
+        
+    def _normalize_name(self, name):
+        """Normalize name: lowercase, remove special chars, extra spaces."""
+        if pd.isna(name):
+            return ''
+        name = str(name).lower()
+        name = re.sub(r'[^a-z\s]', '', name)  # Remove non-letters except spaces
+        name = re.sub(r'\s+', ' ', name)  # Collapse multiple spaces
+        return name.strip()
+    
+    def _build_lookup_structures(self):
+        """Build optimized lookup structures for fast filtering."""
+        # Trigram index for first-stage filtering
+        self.trigram_index = defaultdict(set)
+        
+        for idx, row in self.employee_df.iterrows():
+            emp_id = row['emp_id']
+            for name_variant in [row['normalized_name'], row['first_last'], 
+                                 row['last_first'], row['initial_last']]:
+                trigrams = self._get_trigrams(name_variant)
+                for trigram in trigrams:
+                    self.trigram_index[trigram].add(emp_id)
+        
+        # Last name index for quick lookup
+        self.lastname_index = defaultdict(set)
+        for idx, row in self.employee_df.iterrows():
+            lastname = self._normalize_name(row['last_name'])
+            if lastname:
+                self.lastname_index[lastname].add(row['emp_id'])
+    
+    def _get_trigrams(self, text):
+        """Generate character trigrams from text."""
+        text = f"  {text}  "  # Padding for edge trigrams
+        return {text[i:i+3] for i in range(len(text) - 2)}
+    
+    def _get_candidate_employees(self, counterparty_name):
+        """
+        Stage 1: Fast filtering to get candidate employees.
+        Uses trigram similarity and last name matching.
+        """
+        normalized = self._normalize_name(counterparty_name)
+        
+        if not normalized:
+            return set()
+        
+        # Split into tokens
+        tokens = normalized.split()
+        
+        # Strategy 1: Last name lookup (assuming last token is last name)
+        candidates = set()
+        if tokens:
+            last_token = tokens[-1]
+            candidates.update(self.lastname_index.get(last_token, set()))
+        
+        # Strategy 2: Trigram overlap (for catching misspellings)
+        cp_trigrams = self._get_trigrams(normalized)
+        trigram_candidates = defaultdict(int)
+        
+        for trigram in cp_trigrams:
+            for emp_id in self.trigram_index.get(trigram, set()):
+                trigram_candidates[emp_id] += 1
+        
+        # Keep employees with at least 30% trigram overlap
+        threshold = len(cp_trigrams) * 0.3
+        for emp_id, count in trigram_candidates.items():
+            if count >= threshold:
+                candidates.add(emp_id)
+        
+        return candidates
+    
+    def _fuzzy_match_score(self, counterparty_name, employee_row):
+        """
+        Stage 2: Calculate fuzzy match score using multiple algorithms.
+        Returns score between 0-100.
+        """
+        cp_normalized = self._normalize_name(counterparty_name)
+        
+        # Try matching against different name formats
+        scores = []
+        
+        # 1. Full name match (highest weight)
+        scores.append(fuzz.token_sort_ratio(cp_normalized, employee_row['normalized_name']) * 1.2)
+        
+        # 2. First Last
+        scores.append(fuzz.ratio(cp_normalized, self._normalize_name(employee_row['first_last'])))
+        
+        # 3. Last First
+        scores.append(fuzz.ratio(cp_normalized, self._normalize_name(employee_row['last_first'])))
+        
+        # 4. Initial Last (for "J Doe" cases)
+        scores.append(fuzz.ratio(cp_normalized, self._normalize_name(employee_row['initial_last'])) * 0.9)
+        
+        # 5. Partial ratio (for substring matches)
+        scores.append(fuzz.partial_ratio(cp_normalized, employee_row['normalized_name']) * 0.8)
+        
+        # Return the best score, capped at 100
+        return min(max(scores), 100)
+    
+    def find_matches(self, transaction_df, similarity_threshold=85, 
+                    batch_size=100000, n_jobs=-1):
+        """
+        Main method: Find transactions where counterparty matches an employee.
+        
+        Args:
+            transaction_df: DataFrame with transactions (must have 'counter_party_name')
+            similarity_threshold: Minimum similarity score (0-100) to flag as match
+            batch_size: Process transactions in batches for memory efficiency
+            n_jobs: Number of parallel jobs (-1 for all cores)
+        
+        Returns:
+            DataFrame with matched transactions and match details
+        """
+        matches = []
+        total_rows = len(transaction_df)
+        
+        print(f"Processing {total_rows:,} transactions against {len(self.employee_df):,} employees...")
+        
+        # Process in batches
+        for batch_start in range(0, total_rows, batch_size):
+            batch_end = min(batch_start + batch_size, total_rows)
+            batch = transaction_df.iloc[batch_start:batch_end]
+            
+            print(f"Processing batch {batch_start:,} to {batch_end:,}...")
+            
+            batch_matches = self._process_batch(batch, similarity_threshold)
+            matches.extend(batch_matches)
+            
+            print(f"  Found {len(batch_matches)} potential matches in this batch")
+        
+        if not matches:
+            print("No matches found.")
+            return pd.DataFrame()
+        
+        # Convert to DataFrame
+        match_df = pd.DataFrame(matches)
+        
+        # Merge with original transaction data
+        result = transaction_df.merge(
+            match_df, 
+            left_index=True, 
+            right_on='tran_index', 
+            how='inner'
+        )
+        
+        # Add employee details
+        result = result.merge(
+            self.employee_df[['emp_id', 'full_name', 'first_name', 'last_name']],
+            on='emp_id',
+            how='left',
+            suffixes=('', '_employee')
+        )
+        
+        print(f"\nTotal matches found: {len(result):,}")
+        print(f"Unique employees involved: {result['emp_id'].nunique()}")
+        
+        return result.sort_values('match_score', ascending=False)
+    
+    def _process_batch(self, batch, similarity_threshold):
+        """Process a batch of transactions."""
+        batch_matches = []
+        
+        for idx, row in batch.iterrows():
+            counterparty = row['counter_party_name']
+            
+            if pd.isna(counterparty):
+                continue
+            
+            # Stage 1: Get candidates (fast filtering)
+            candidate_emp_ids = self._get_candidate_employees(counterparty)
+            
+            if not candidate_emp_ids:
+                continue
+            
+            # Stage 2: Fuzzy matching on candidates
+            for emp_id in candidate_emp_ids:
+                employee = self.employee_df[self.employee_df['emp_id'] == emp_id].iloc[0]
+                score = self._fuzzy_match_score(counterparty, employee)
+                
+                if score >= similarity_threshold:
+                    batch_matches.append({
+                        'tran_index': idx,
+                        'emp_id': emp_id,
+                        'match_score': round(score, 2),
+                        'counterparty_name': counterparty,
+                        'matched_employee_name': employee['full_name']
+                    })
+        
+        return batch_matches
+    
+    def get_match_summary(self, matched_df):
+        """Generate summary statistics for matched transactions."""
+        if len(matched_df) == 0:
+            return "No matches to summarize."
+        
+        summary = {
+            'total_flagged_transactions': len(matched_df),
+            'unique_employees': matched_df['emp_id'].nunique(),
+            'total_amount': matched_df['amount'].sum() if 'amount' in matched_df.columns else None,
+            'avg_match_score': matched_df['match_score'].mean(),
+            'high_confidence_matches': len(matched_df[matched_df['match_score'] >= 95]),
+            'medium_confidence_matches': len(matched_df[(matched_df['match_score'] >= 85) & 
+                                                        (matched_df['match_score'] < 95)]),
+        }
+        
+        return pd.Series(summary)
+
+
+# ============================================================================
+# USAGE EXAMPLE
+# ============================================================================
+
+def example_usage():
+    """Demonstrate how to use the fraud detector."""
+    
+    # Sample employee data
+    employees = pd.DataFrame({
+        'emp_id': [1, 2, 3, 4],
+        'first_name': ['John', 'Jane', 'Robert', 'Sarah'],
+        'middle_name': ['Michael', 'Ann', 'James', None],
+        'last_name': ['Doe', 'Smith', 'Johnson', 'Williams'],
+        'dob': ['1990-01-15', '1985-03-22', '1992-07-10', '1988-11-05']
+    })
+    
+    # Sample transaction data with variations
+    transactions = pd.DataFrame({
+        'tran_id': [101, 102, 103, 104, 105, 106, 107],
+        'amount': [5000, 15000, 3000, 25000, 1000, 8000, 12000],
+        'account_num': ['A001', 'A002', 'A003', 'A004', 'A005', 'A006', 'A007'],
+        'counter_party_name': [
+            'John Doe',           # Exact match
+            'Doe John',           # Reversed
+            'J Doe',              # Initial
+            'Jane A Smith',       # With middle initial
+            'Bob Johnson',        # Nickname
+            'Sarah Williams',     # Exact
+            'Random Person'       # No match
+        ],
+        'date': pd.date_range('2024-01-01', periods=7),
+        'tran_typ': ['WIRE', 'ACH', 'WIRE', 'CHECK', 'WIRE', 'ACH', 'WIRE']
+    })
+    
+    # Initialize detector
+    detector = EmployeeFraudDetector(employees)
+    
+    # Find matches
+    matches = detector.find_matches(
+        transactions, 
+        similarity_threshold=85
+    )
+    
+    # Display results
+    if len(matches) > 0:
+        print("\n" + "="*80)
+        print("MATCHED TRANSACTIONS")
+        print("="*80)
+        print(matches[['tran_id', 'counter_party_name', 'matched_employee_name', 
+                      'match_score', 'amount']].to_string(index=False))
+        
+        print("\n" + "="*80)
+        print("SUMMARY STATISTICS")
+        print("="*80)
+        print(detector.get_match_summary(matches))
+    
+    return detector, matches
+
+
+# Run example
+if __name__ == "__main__":
+    detector, matches = example_usage()
