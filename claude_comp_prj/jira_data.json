@@ -1,0 +1,1120 @@
+{
+  "project": {
+    "key": "TRANS",
+    "name": "Multi-Asset Execution and Post-Trade Platform",
+    "projectType": "software",
+    "description": "Unified trading platform integrating pre-trade analytics, live pricing, wire authorization, and portfolio risk reporting",
+    "lead": "amanda.foster@acorp.com"
+  },
+  "epics": [
+    {
+      "key": "TRANS-1",
+      "type": "Epic",
+      "summary": "User Authentication & Authorization Framework",
+      "description": "Implement secure authentication system with SSO integration, role-based access control, and MFA support for sensitive operations",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T09:00:00Z",
+      "updated": "2026-01-24T14:30:00Z",
+      "labels": ["security", "foundation", "sprint-1"],
+      "components": ["Security", "Backend"],
+      "epicColor": "#0052CC",
+      "comments": [
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-15T09:15:00Z",
+          "body": "This is foundational for the entire platform. We need to prioritize OAuth 2.0 integration with our existing Active Directory. Security team review required before implementation."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-16T11:20:00Z",
+          "body": "From compliance perspective, please ensure we implement: 1) Session timeout after 15 min inactivity, 2) Account lockout after 5 failed attempts, 3) Comprehensive audit logging of all auth events. Will review design doc once ready."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-17T08:45:00Z",
+          "body": "Design doc shared in Confluence. Planning to use Spring Security with JWT tokens. MFA will be implemented using TOTP (Google Authenticator compatible). Biometric auth for mobile via react-native-biometrics."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-2",
+      "type": "Epic",
+      "summary": "Real-Time Pricing Engine",
+      "description": "Build pricing service that integrates with Bloomberg and Reuters, providing real-time price updates via WebSocket with <500ms latency",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T09:30:00Z",
+      "updated": "2026-01-23T16:45:00Z",
+      "labels": ["real-time", "market-data", "sprint-3"],
+      "components": ["Pricing Service", "Backend"],
+      "epicColor": "#FF5630",
+      "comments": [
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-18T10:00:00Z",
+          "body": "Stakeholders emphasized that stale pricing is one of the biggest pain points in current system. Portfolio managers need prices updated within 500ms of market change. This is a critical differentiator for adoption."
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-18T14:30:00Z",
+          "body": "Bloomberg B-PIPE contract renewal is in progress. Have contacted vendor to confirm SLA. Planning WebSocket architecture with Redis pub/sub for price distribution. Will implement circuit breaker pattern for vendor connectivity issues."
+        },
+        {
+          "author": "robert.williams@acorp.com",
+          "created": "2026-01-20T09:15:00Z",
+          "body": "Bloomberg contract approved. Vendor confirmed they can meet our latency requirements. Please coordinate with infrastructure team on network optimization between our datacenter and Bloomberg."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-22T11:00:00Z",
+          "body": "QA will need to test latency under various load conditions. Planning to use k6 for WebSocket load testing. We'll need test market data feeds from Bloomberg for non-prod environments."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-3",
+      "type": "Epic",
+      "summary": "Pre-Trade Analytics Engine",
+      "description": "Develop analytics service for VaR calculations, exposure analysis, scenario modeling with accurate financial computations",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T10:00:00Z",
+      "updated": "2026-01-23T09:30:00Z",
+      "labels": ["analytics", "python", "sprint-3"],
+      "components": ["Analytics Service", "Backend"],
+      "epicColor": "#36B37E",
+      "comments": [
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-19T15:30:00Z",
+          "body": "Planning to use FastAPI with NumPy/Pandas for calculations. VaR will use historical simulation method initially, then add Monte Carlo. All calculations need 4 decimal precision per SQR requirements."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-20T08:00:00Z",
+          "body": "Portfolio managers need scenario analysis capability - what happens to portfolio if rates move by X bps, equity markets drop Y%, etc. This is crucial for risk assessment before large trades."
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-21T10:45:00Z",
+          "body": "Discussed with business - they want ability to save custom scenarios and run them regularly. Also need stress testing based on historical crisis events (2008, 2020, etc). Adding these as separate stories."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-4",
+      "type": "Epic",
+      "summary": "Wire Authorization Workflow",
+      "description": "Implement secure wire transfer submission, approval routing with MFA, dual authorization for high-value transactions, and comprehensive audit trail",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T10:30:00Z",
+      "updated": "2026-01-24T10:15:00Z",
+      "labels": ["wires", "security", "compliance", "sprint-5"],
+      "components": ["Wire Service", "Backend", "Mobile"],
+      "epicColor": "#FF991F",
+      "comments": [
+        {
+          "author": "marcus.johnson@acorp.com",
+          "created": "2026-01-16T13:00:00Z",
+          "body": "Current wire process takes 45-60 minutes due to email-based approvals. Need to reduce this to <10 minutes. Mobile approval is essential - approvers are often in meetings or traveling. This is top priority for operations team."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-17T09:30:00Z",
+          "body": "Compliance requirements: 1) Dual approval for wires >$1M, 2) MFA required for all approvals, 3) Maker-checker principle (submitter cannot be approver), 4) 7-year audit retention. Need detailed audit log of all actions including IP address, device, timestamp."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-18T11:00:00Z",
+          "body": "Architecture proposal: Spring Boot workflow engine, encrypted storage for wire details (AES-256), push notifications via Firebase for mobile approvers. Implementing state machine pattern for approval workflow. Will share detailed design by Jan 25."
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-22T14:00:00Z",
+          "body": "Need to confirm exact threshold amounts for dual approval with compliance. Also, what happens if approver rejects - does it go back to submitter or to alternative approver? Setting up meeting with Marcus and Patricia for Jan 26."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-5",
+      "type": "Epic",
+      "summary": "Portfolio Risk Reporting",
+      "description": "Build reporting service generating scheduled and on-demand risk reports including VaR, stress tests, concentration analysis, regulatory reports",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T11:00:00Z",
+      "updated": "2026-01-22T15:30:00Z",
+      "labels": ["reporting", "risk", "sprint-6"],
+      "components": ["Risk Reporting Service", "Backend"],
+      "epicColor": "#6554C0",
+      "comments": [
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-19T10:30:00Z",
+          "body": "Currently risk reports only run overnight. We need intraday reporting capability - especially during volatile markets. Report generation should complete within 30 seconds for standard portfolios."
+        },
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-20T16:00:00Z",
+          "body": "Planning to use background job processing with Celery for scheduled reports. For on-demand reports, will implement caching strategy - if portfolio hasn't changed significantly, return cached report. Larger portfolios (>1000 positions) may take longer, will set user expectations via UI."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-6",
+      "type": "Epic",
+      "summary": "Web Application Frontend",
+      "description": "Build React-based web application with responsive design, dashboard, real-time updates, and accessibility compliance",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T11:30:00Z",
+      "updated": "2026-01-24T11:00:00Z",
+      "labels": ["frontend", "web", "ui-ux"],
+      "components": ["Frontend", "Web"],
+      "epicColor": "#00B8D9",
+      "comments": [
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-17T13:00:00Z",
+          "body": "Starting with React 18, TypeScript, Redux Toolkit. Using Material-UI component library for consistent design. Planning WebSocket integration for real-time price updates. Wireframes in Figma ready for review."
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-18T09:00:00Z",
+          "body": "User feedback from demos: 1) Larger fonts needed for trading floor displays, 2) Dark mode option requested, 3) Customizable dashboard layouts. Adding these as enhancement stories."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-20T14:30:00Z",
+          "body": "Accessibility testing will be critical - need WCAG 2.1 Level AA compliance. Will use axe DevTools for automated testing and manual keyboard navigation testing. Lighthouse performance audits on every build."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-7",
+      "type": "Epic",
+      "summary": "Mobile Applications (iOS & Android)",
+      "description": "Develop React Native mobile apps with biometric auth, push notifications, offline support for essential features",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "david.chen@acorp.com",
+      "created": "2026-01-15T12:00:00Z",
+      "updated": "2026-01-23T10:00:00Z",
+      "labels": ["mobile", "react-native", "ios", "android"],
+      "components": ["Frontend", "Mobile"],
+      "epicColor": "#FF5630",
+      "comments": [
+        {
+          "author": "marcus.johnson@acorp.com",
+          "created": "2026-01-16T15:00:00Z",
+          "body": "Mobile is absolutely critical for wire approvals. Approvers need to act quickly, often from meetings or while traveling. Biometric auth (Face ID, Touch ID, fingerprint) is must-have for security and convenience."
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-19T11:00:00Z",
+          "body": "Using React Native for code sharing with web. Planning deep linking for wire approval notifications. Offline support needed for viewing recent portfolio positions. Push notifications via Firebase Cloud Messaging."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-21T13:00:00Z",
+          "body": "Will need to test on multiple device types and OS versions. iOS 15+ and Android 12+ per requirements. Appium for automated mobile testing. Also need to test on tablets - business requested tablet optimization."
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "key": "TRANS-10",
+      "type": "Story",
+      "epic": "TRANS-1",
+      "summary": "Implement OAuth 2.0 authentication with JWT tokens",
+      "description": "As a user, I want to log in using my company credentials (SSO) so that I can access the platform securely without managing separate passwords.\n\nAcceptance Criteria:\n- User can authenticate via Active Directory SSO\n- JWT access token issued with 15-minute expiry\n- Refresh token issued with 24-hour expiry\n- Token includes user roles and permissions\n- Failed login attempts logged\n- Session invalidated on logout",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "sarah.mitchell@acorp.com",
+      "created": "2026-01-16T09:00:00Z",
+      "updated": "2026-01-24T15:00:00Z",
+      "storyPoints": 8,
+      "labels": ["backend", "security", "authentication"],
+      "sprint": "Sprint 1",
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-16T14:00:00Z",
+          "body": "Starting implementation with Spring Security OAuth2 Resource Server. Using RS256 algorithm for JWT signing. Public key distributed to all services for token validation."
+        },
+        {
+          "author": "tom.anderson@acorp.com",
+          "created": "2026-01-18T10:30:00Z",
+          "body": "Infrastructure team has set up test Active Directory environment. Connection details sent via secure channel. Please use groups for role mapping: PM_GROUP -> PORTFOLIO_MANAGER, OPS_GROUP -> OPERATIONS, etc."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-20T16:00:00Z",
+          "body": "Integration with AD working in dev environment. Token validation taking ~15ms on average. Implementing token refresh endpoint. Question: should refresh token rotation be enabled? (More secure but requires client handling)"
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-21T09:00:00Z",
+          "body": "Yes, please enable refresh token rotation for enhanced security. Frontend team can handle the rotation logic. Also ensure we're logging token issuance and refresh events for audit trail."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T11:00:00Z",
+          "body": "QA question: What's the behavior when AD is down? Do we have a fallback mechanism or should we fail gracefully with appropriate error message?"
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-23T14:30:00Z",
+          "body": "Good catch. Implementing circuit breaker pattern. If AD is unreachable, we'll return HTTP 503 Service Unavailable with clear message. Already authenticated users can continue using valid tokens until expiry. No offline authentication available per security requirements."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-11",
+      "type": "Story",
+      "epic": "TRANS-1",
+      "summary": "Implement role-based access control (RBAC)",
+      "description": "As a system administrator, I want to control user access based on roles so that users only see features they're authorized to use.\n\nAcceptance Criteria:\n- Define roles: PORTFOLIO_MANAGER, TRADER, OPERATIONS, APPROVER, ADMIN, READ_ONLY\n- Each role has specific permissions mapped\n- API endpoints protected by role requirements\n- UI elements hidden based on user roles\n- Role changes reflected without re-login (after token refresh)",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "patricia.moore@acorp.com",
+      "created": "2026-01-16T10:00:00Z",
+      "updated": "2026-01-24T09:30:00Z",
+      "storyPoints": 5,
+      "labels": ["backend", "security", "authorization"],
+      "sprint": "Sprint 1",
+      "comments": [
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-16T10:30:00Z",
+          "body": "Role matrix documented in Confluence. Key principle: least privilege. Users get minimum permissions needed for job function. Wire approvers must be separate from wire submitters (maker-checker). Please implement this constraint."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-17T11:00:00Z",
+          "body": "Implemented @PreAuthorize annotations on Spring endpoints. Role hierarchy configured: ADMIN > APPROVER > OPERATIONS > TRADER > READ_ONLY. Question: Can a user have multiple roles simultaneously?"
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-17T14:00:00Z",
+          "body": "Yes, users can have multiple roles. Example: A senior portfolio manager might have both PORTFOLIO_MANAGER and APPROVER roles. System should grant union of permissions from all assigned roles."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-12",
+      "type": "Story",
+      "epic": "TRANS-1",
+      "summary": "Implement multi-factor authentication (MFA) for sensitive operations",
+      "description": "As a compliance officer, I want MFA required for wire approvals and other sensitive operations so that we maintain strong security controls.\n\nAcceptance Criteria:\n- TOTP-based MFA (compatible with Google Authenticator, Authy)\n- QR code enrollment process\n- Backup codes provided during enrollment\n- MFA required for: wire approval, user role changes, report exports\n- MFA challenge valid for 5 minutes\n- Failed MFA attempts logged",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "patricia.moore@acorp.com",
+      "created": "2026-01-16T11:00:00Z",
+      "updated": "2026-01-23T16:00:00Z",
+      "storyPoints": 8,
+      "labels": ["backend", "security", "mfa"],
+      "sprint": "Sprint 2",
+      "comments": [
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-16T11:30:00Z",
+          "body": "MFA is regulatory requirement for financial transaction approvals. Must support standard TOTP (RFC 6238). Users should receive 10 backup codes during enrollment for account recovery scenarios."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-18T09:00:00Z",
+          "body": "Planning to use GoogleAuth library for TOTP generation/validation. Secret keys stored encrypted in database. Question: MFA required on every sensitive operation or can we have a 'remember this device for 8 hours' option?"
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-18T13:00:00Z",
+          "body": "For wire approvals specifically - MFA on every approval, no exceptions. For other operations (report exports, settings changes), we can allow 8-hour device trust after successful MFA."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-20",
+      "type": "Story",
+      "epic": "TRANS-2",
+      "summary": "Integrate Bloomberg B-PIPE for real-time equity prices",
+      "description": "As a portfolio manager, I want to see real-time equity prices updated within 500ms so that I can make informed trading decisions.\n\nAcceptance Criteria:\n- WebSocket connection to Bloomberg B-PIPE established\n- Subscribe to equity symbols on-demand\n- Prices pushed to clients within 500ms of Bloomberg update\n- Handle connection failures with automatic reconnection\n- Display data freshness indicator\n- Support 1000+ concurrent subscriptions",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "linda.chen@acorp.com",
+      "created": "2026-01-17T09:00:00Z",
+      "updated": "2026-01-24T14:00:00Z",
+      "storyPoints": 13,
+      "labels": ["backend", "market-data", "real-time"],
+      "sprint": "Sprint 3",
+      "comments": [
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-17T14:00:00Z",
+          "body": "Bloomberg SDK installed. Testing connection to demo environment. Planning architecture: Bloomberg adapter service -> Kafka topic -> WebSocket gateway -> Clients. This allows us to scale WebSocket servers independently."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-18T08:30:00Z",
+          "body": "Critical symbols to prioritize: SPY, QQQ, major tech stocks (AAPL, MSFT, GOOGL, AMZN, NVDA). These are most actively traded by our PMs. Need ultra-low latency for these."
+        },
+        {
+          "author": "tom.anderson@acorp.com",
+          "created": "2026-01-20T10:00:00Z",
+          "body": "Network team has provisioned dedicated 10Gbps link to Bloomberg. Latency from our datacenter to Bloomberg is averaging 12ms. Direct connection to avoid internet routing."
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-22T15:30:00Z",
+          "body": "Initial testing looks good. Seeing 280-350ms average latency from Bloomberg update to client browser. Breaking down: Bloomberg->Server (12ms), Processing (8ms), Kafka (15ms), WebSocket broadcast (250ms for 100 clients). Need to optimize WebSocket fan-out."
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-23T09:00:00Z",
+          "body": "Great progress! 350ms is within SLA. For optimization, consider Redis pub/sub for WebSocket distribution - might be faster than Kafka for this use case. Also, batch price updates every 100ms rather than individual sends."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-24T11:00:00Z",
+          "body": "Will need to test under load - what happens with 500 clients each subscribed to 50 symbols? Planning load test for Sprint 3 end. Also need to test reconnection logic when Bloomberg feed hiccups."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-21",
+      "type": "Story",
+      "epic": "TRANS-2",
+      "summary": "Build WebSocket price distribution service",
+      "description": "As a frontend developer, I want a WebSocket API to subscribe to real-time prices so that users see live updates without polling.\n\nAcceptance Criteria:\n- WebSocket endpoint with authentication\n- Subscribe/unsubscribe message protocol\n- Price updates in JSON format with timestamp\n- Heartbeat mechanism to detect stale connections\n- Support 10,000+ concurrent connections\n- Graceful degradation if market data unavailable",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "emily.wang@acorp.com",
+      "created": "2026-01-17T10:00:00Z",
+      "updated": "2026-01-24T10:00:00Z",
+      "storyPoints": 8,
+      "labels": ["backend", "websocket", "real-time"],
+      "sprint": "Sprint 3",
+      "comments": [
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-17T15:00:00Z",
+          "body": "Implementing with Socket.IO for WebSocket with fallback. Message format:\n```json\n{\n  \"type\": \"price_update\",\n  \"symbol\": \"AAPL\",\n  \"price\": 185.42,\n  \"timestamp\": \"2026-01-17T15:00:00.123Z\",\n  \"source\": \"BLOOMBERG\"\n}\n```"
+        },
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-18T11:00:00Z",
+          "body": "Perfect! Frontend will need to handle reconnection logic. Can we get disconnect reason codes? Also, what's the max number of symbols one client can subscribe to?"
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-19T09:00:00Z",
+          "body": "Yes, disconnect codes implemented (1000=normal close, 1001=going away, 1006=abnormal). Limiting subscriptions to 100 symbols per client to prevent abuse. Will return error if limit exceeded."
+        },
+        {
+          "author": "tom.anderson@acorp.com",
+          "created": "2026-01-21T14:00:00Z",
+          "body": "Load balancer configured for WebSocket sticky sessions. Running 3 WebSocket server instances behind ALB. Auto-scaling configured based on connection count - adds instance at 3000 connections per server."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-30",
+      "type": "Story",
+      "epic": "TRANS-3",
+      "summary": "Implement VaR (Value at Risk) calculation engine",
+      "description": "As a portfolio manager, I want to calculate portfolio VaR so that I understand my potential losses under normal market conditions.\n\nAcceptance Criteria:\n- Calculate 1-day and 10-day VaR\n- Support 95%, 99% confidence levels\n- Historical simulation method using 250-day lookback\n- Results accurate to 4 decimal places\n- Calculation completes in <5 seconds for portfolios <500 positions\n- Results cached for 5 minutes",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "linda.chen@acorp.com",
+      "created": "2026-01-18T09:00:00Z",
+      "updated": "2026-01-23T14:00:00Z",
+      "storyPoints": 13,
+      "labels": ["backend", "analytics", "python"],
+      "sprint": "Sprint 3",
+      "comments": [
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-18T14:00:00Z",
+          "body": "Planning implementation with NumPy/SciPy. Historical simulation approach: 1) Get portfolio positions, 2) Fetch 250 days of historical prices, 3) Calculate daily returns, 4) Simulate P&L for each historical scenario, 5) Sort and find percentile. Vectorized operations for speed."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-19T08:30:00Z",
+          "body": "Historical simulation is good starting point. Eventually we'll need Monte Carlo VaR for options portfolios. For now, focus on equity/FX portfolios. Also need component VaR - contribution of each position to total portfolio VaR."
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-20T11:00:00Z",
+          "body": "Business wants VaR displayed on main dashboard. Also need ability to drill down - clicking VaR should show which positions are contributing most to risk. Adding separate story for VaR decomposition visualization."
+        },
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-22T16:00:00Z",
+          "body": "Working on performance optimization. For 250-position portfolio with 250-day history, calculation taking ~3.2 seconds. Using pandas for data manipulation, numpy for matrix operations. Considering parallel processing for very large portfolios."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-31",
+      "type": "Story",
+      "epic": "TRANS-3",
+      "summary": "Build scenario analysis engine",
+      "description": "As a portfolio manager, I want to run what-if scenarios on my portfolio so that I can understand impact of market moves before they happen.\n\nAcceptance Criteria:\n- Support scenarios: equity market shock, interest rate change, FX rate change\n- Allow custom multi-factor scenarios\n- Calculate impact on portfolio value and VaR\n- Save custom scenarios for reuse\n- Display results in table and chart format\n- Include historical scenario templates (2008 crisis, COVID crash, etc.)",
+      "status": "To Do",
+      "priority": "Medium",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "linda.chen@acorp.com",
+      "created": "2026-01-18T10:00:00Z",
+      "updated": "2026-01-22T15:00:00Z",
+      "storyPoints": 8,
+      "labels": ["backend", "analytics", "scenario"],
+      "sprint": "Sprint 4",
+      "comments": [
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-18T10:30:00Z",
+          "body": "Most common scenario: 'What if S&P 500 drops 10%?' Portfolio should show new positions values, total impact, VaR change. Historical scenarios very valuable - '2008 Financial Crisis' scenario should apply the actual moves from Sep-Oct 2008."
+        },
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-20T13:00:00Z",
+          "body": "Scenario data model designed. Each scenario contains multiple factor shocks with magnitudes. E.g., '2008 Crisis' = {S&P500: -38%, VIX: +175%, USD: +5%, etc.}. Users can create custom scenarios by specifying shocks to any tracked factors."
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-21T09:30:00Z",
+          "body": "UX feedback: Traders want to see scenarios side-by-side for comparison. 'Compare 3 scenarios' view showing results in table. Also want to save scenario results to PDF for presentation to risk committee."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-40",
+      "type": "Story",
+      "epic": "TRANS-4",
+      "summary": "Build wire submission form and validation",
+      "description": "As an operations analyst, I want to submit wire transfer requests with all required details so that the approval process can begin.\n\nAcceptance Criteria:\n- Form captures: beneficiary name, account, amount, currency, purpose, value date\n- Real-time field validation\n- Beneficiary lookup from saved templates\n- Amount validation against account balance\n- Determine approval requirements (single vs dual)\n- Generate confirmation number\n- Send notification to approvers",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "marcus.johnson@acorp.com",
+      "created": "2026-01-19T09:00:00Z",
+      "updated": "2026-01-24T11:00:00Z",
+      "storyPoints": 8,
+      "labels": ["backend", "wires", "validation"],
+      "sprint": "Sprint 5",
+      "comments": [
+        {
+          "author": "marcus.johnson@acorp.com",
+          "created": "2026-01-19T09:30:00Z",
+          "body": "Current pain point: analysts re-enter beneficiary details every time. Need beneficiary templates for frequent payees. Also, need clear indication upfront if dual approval required - surprises cause delays."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-19T14:00:00Z",
+          "body": "Validation requirements:\n1) No wires to countries on sanctions list (check OFAC)\n2) Beneficiary account must pass check digit validation\n3) Amount cannot exceed daily wire limit ($50M per account)\n4) Value date must be business day\n5) Purpose required (free text, 200 char max)"
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-20T10:00:00Z",
+          "body": "Wire approval threshold question: Current requirement says $1M+ needs dual approval. Is this per wire or cumulative daily amount per account? Also, who determines the list of authorized approvers?"
+        },
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-21T11:00:00Z",
+          "body": "Threshold is per individual wire. Approver list maintained in user management system - users with APPROVER role. Setting up clarification meeting for Jan 26 to finalize all business rules."
+        },
+        {
+          "author": "marcus.johnson@acorp.com",
+          "created": "2026-01-23T08:00:00Z",
+          "body": "One more requirement: Operations needs ability to save wire as draft and come back to complete later. Sometimes we need to get additional information before submitting for approval."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-41",
+      "type": "Story",
+      "epic": "TRANS-4",
+      "summary": "Implement wire approval workflow engine",
+      "description": "As a system, I need to route wires to appropriate approvers and track approval status through completion.\n\nAcceptance Criteria:\n- Route wire to approvers based on amount threshold\n- Support single and dual approval workflows\n- Prevent submitter from approving their own wire\n- Track approval status (Pending, Approved, Rejected, Executed)\n- Send notifications at each status change\n- Implement approval timeouts with escalation\n- Comprehensive audit trail",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "patricia.moore@acorp.com",
+      "created": "2026-01-19T10:00:00Z",
+      "updated": "2026-01-24T09:00:00Z",
+      "storyPoints": 13,
+      "labels": ["backend", "workflow", "wires"],
+      "sprint": "Sprint 5",
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-19T15:00:00Z",
+          "body": "Planning to use state machine pattern for workflow. States: SUBMITTED -> PENDING_APPROVAL -> APPROVED -> EXECUTED (or REJECTED at approval stage). For dual approval: SUBMITTED -> FIRST_APPROVED -> SECOND_APPROVED -> EXECUTED."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-20T09:00:00Z",
+          "body": "Approval timeout: If no action within 24 hours, escalate to manager. After 48 hours, send alert to operations leadership. Wire cannot execute without proper approvals - even if timeout occurs."
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-22T10:00:00Z",
+          "body": "Question: For dual approval, do we need both approvers to be different from submitter, or can first approver be submitter's manager? Also, should second approver see first approver's identity?"
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-22T14:00:00Z",
+          "body": "Both approvers must be different from submitter. Second approver should see who first approver was (transparency). If first approver rejects, wire goes back to submitter. No automatic routing to different approver."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-42",
+      "type": "Story",
+      "epic": "TRANS-4",
+      "summary": "Build mobile wire approval interface",
+      "description": "As an authorized approver, I want to review and approve wires from my mobile device so that I don't delay critical payments.\n\nAcceptance Criteria:\n- View complete wire details on mobile screen\n- Support biometric authentication for approval action\n- Work offline (show cached pending approvals)\n- Push notifications for new wire requests\n- Deep linking from notification to approval screen\n- Approve/Reject with mandatory comment\n- Show approval history",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "marcus.johnson@acorp.com",
+      "created": "2026-01-19T11:00:00Z",
+      "updated": "2026-01-23T16:00:00Z",
+      "storyPoints": 13,
+      "labels": ["mobile", "wires", "approval"],
+      "sprint": "Sprint 6",
+      "comments": [
+        {
+          "author": "marcus.johnson@acorp.com",
+          "created": "2026-01-19T11:30:00Z",
+          "body": "This is THE most critical feature for operations. Approvers are executives - often in meetings, traveling. Mobile approval is essential. Push notifications must be reliable - missed notification = delayed payment = unhappy client."
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-20T14:00:00Z",
+          "body": "Using Firebase Cloud Messaging for push notifications. Deep linking configured. Wire details screen designed for small screens - key info at top (amount, beneficiary), full details accessible via scroll. Biometric auth via react-native-biometrics."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-21T10:00:00Z",
+          "body": "Security concern: Biometric should unlock MFA, not replace it. Flow should be: 1) Tap approve, 2) Biometric auth (unlocks device), 3) MFA challenge (TOTP code), 4) Final approval confirmation. Two-factor security maintained."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T13:00:00Z",
+          "body": "Will test notification delivery across different scenarios: app in background, app killed, phone locked, do-not-disturb mode. Also testing on low-end Android devices for performance."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-60",
+      "type": "Story",
+      "epic": "TRANS-6",
+      "summary": "Build portfolio dashboard with real-time updates",
+      "description": "As a portfolio manager, I want a dashboard showing my portfolios with live P&L and positions so that I can monitor my books in real-time.\n\nAcceptance Criteria:\n- Display portfolio list with key metrics (NAV, P&L, return %)\n- Real-time P&L updates as prices change\n- Drill-down to position-level detail\n- Color-coding for gains/losses\n- Refresh data every 5 seconds (WebSocket preferred)\n- Support multiple portfolios side-by-side\n- Export to CSV/Excel",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "linda.chen@acorp.com",
+      "created": "2026-01-17T09:00:00Z",
+      "updated": "2026-01-24T13:00:00Z",
+      "storyPoints": 13,
+      "labels": ["frontend", "dashboard", "real-time"],
+      "sprint": "Sprint 2",
+      "comments": [
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-17T14:00:00Z",
+          "body": "Dashboard mockups in Figma ready for review. Using Material-UI data grid with custom cell renderers for color-coding. WebSocket integration for price updates, recalculating P&L client-side when prices change."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-18T09:00:00Z",
+          "body": "Looks good! One request: Add a 'freeze' button to stop live updates. Sometimes we need to take screenshots or discuss specific numbers without them changing. Also, current P&L should show both $ and % terms."
+        },
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-20T11:00:00Z",
+          "body": "Freeze button added. Implemented toggle for $/% display. Performance question: For portfolio with 300 positions receiving price updates, should we throttle re-renders? Current implementation re-renders entire grid on each price update."
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-21T09:00:00Z",
+          "body": "Yes, definitely throttle. React 18 automatic batching helps, but also batch price updates every 250ms on client side. Users won't notice 250ms delay but will notice janky UI. Use React.memo and useMemo for expensive calculations."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T14:00:00Z",
+          "body": "Performance testing: Dashboard with 300 positions, 50 price updates/sec. CPU usage acceptable with batching. Memory leak detected in WebSocket subscription cleanup - Emily please review component unmount logic."
+        },
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-24T10:00:00Z",
+          "body": "Memory leak fixed - WebSocket unsubscribe now called in useEffect cleanup. Also implemented virtualized scrolling for large position lists. Performance much better now."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-61",
+      "type": "Story",
+      "epic": "TRANS-6",
+      "summary": "Implement user preferences and customization",
+      "description": "As a user, I want to customize my dashboard layout and preferences so that I can work more efficiently.\n\nAcceptance Criteria:\n- Save dashboard widget arrangement\n- Choose default portfolio on login\n- Set timezone preference\n- Configure notification preferences\n- Choose number format (commas, decimal places)\n- Dark mode toggle\n- Preferences saved to user profile\n- Sync across devices",
+      "status": "To Do",
+      "priority": "Medium",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "sarah.mitchell@acorp.com",
+      "created": "2026-01-18T09:00:00Z",
+      "updated": "2026-01-22T14:00:00Z",
+      "storyPoints": 5,
+      "labels": ["frontend", "ux", "preferences"],
+      "sprint": "Sprint 4",
+      "comments": [
+        {
+          "author": "sarah.mitchell@acorp.com",
+          "created": "2026-01-18T09:30:00Z",
+          "body": "User feedback strong on customization. Different users have different workflows. Some want analytics front and center, others prioritize P&L. Drag-and-drop widget arrangement would be ideal."
+        },
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-19T13:00:00Z",
+          "body": "Looking at react-grid-layout for drag-and-drop. Preferences will be stored in user_preferences table, loaded on login. Dark mode using Material-UI theme switching. Will implement auto-detect for system dark mode preference."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-21T08:30:00Z",
+          "body": "Please add font size control. Trading floor has large monitors - users want bigger fonts. Some users are older with vision issues. Font scaling would be very helpful."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-70",
+      "type": "Story",
+      "epic": "TRANS-7",
+      "summary": "Implement biometric authentication for mobile",
+      "description": "As a mobile user, I want to use Face ID/Touch ID/fingerprint to authenticate so that I can access the app quickly and securely.\n\nAcceptance Criteria:\n- Support Face ID (iOS)\n- Support Touch ID (iOS)\n- Support fingerprint (Android)\n- Fallback to PIN if biometric unavailable\n- Biometric enables MFA, doesn't replace it\n- Re-authenticate after 8 hours\n- Settings to disable biometric",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "marcus.johnson@acorp.com",
+      "created": "2026-01-20T09:00:00Z",
+      "updated": "2026-01-24T10:00:00Z",
+      "storyPoints": 5,
+      "labels": ["mobile", "security", "biometric"],
+      "sprint": "Sprint 6",
+      "comments": [
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-20T14:00:00Z",
+          "body": "Using react-native-biometrics library. iOS implementation straightforward. Android more fragmented - different manufacturers handle fingerprint differently. Will test on Samsung, Pixel, OnePlus devices."
+        },
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-21T09:00:00Z",
+          "body": "Security architecture clarification: Biometric unlocks locally stored credentials (OAuth refresh token). App still needs to perform full MFA for sensitive operations like wire approval. Biometric is convenience feature for app unlock only."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T15:00:00Z",
+          "body": "Test cases to cover: 1) Biometric fails -> fallback to PIN, 2) User adds new fingerprint -> app still recognizes, 3) Device doesn't support biometric -> PIN only mode, 4) User disables biometric in phone settings -> graceful degradation"
+        }
+      ]
+    }
+  ],
+  "subtasks": [
+    {
+      "key": "TRANS-10-1",
+      "type": "Sub-task",
+      "parent": "TRANS-10",
+      "summary": "Configure Spring Security OAuth2 Resource Server",
+      "description": "Set up Spring Security dependencies, configure JWT validation, create security filter chain",
+      "status": "Done",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "mike.chen@acorp.com",
+      "created": "2026-01-16T14:30:00Z",
+      "updated": "2026-01-18T17:00:00Z",
+      "timeEstimate": "4h",
+      "timeSpent": "5h",
+      "labels": ["backend", "security"],
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-17T16:00:00Z",
+          "body": "Configuration complete. Using RS256 algorithm. Public key endpoint configured at /oauth/public-key. Testing with Postman - token validation working correctly."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-10-2",
+      "type": "Sub-task",
+      "parent": "TRANS-10",
+      "summary": "Integrate with Active Directory for authentication",
+      "description": "Configure LDAP connection to AD, implement user lookup, map AD groups to application roles",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "mike.chen@acorp.com",
+      "created": "2026-01-16T14:35:00Z",
+      "updated": "2026-01-24T15:00:00Z",
+      "timeEstimate": "8h",
+      "timeSpent": "6h",
+      "labels": ["backend", "integration"],
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-20T11:00:00Z",
+          "body": "AD integration working in dev. Successfully authenticating test users. Group mapping configured: CN=TradingPM,OU=Groups,DC=acorp,DC=com -> PORTFOLIO_MANAGER role. Need to test with production AD groups."
+        },
+        {
+          "author": "tom.anderson@acorp.com",
+          "created": "2026-01-21T09:00:00Z",
+          "body": "Production AD groups created. Testing credentials sent. Please validate against production AD server (use VPN)."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-23T16:00:00Z",
+          "body": "Tested against prod AD. Authentication working. Noticed slight latency (~300ms) for AD lookup. Implementing caching layer to store user->role mapping for 1 hour to reduce AD calls."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-10-3",
+      "type": "Sub-task",
+      "parent": "TRANS-10",
+      "summary": "Implement JWT token generation and refresh logic",
+      "description": "Create token endpoint, implement access/refresh token generation, handle token rotation",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "mike.chen@acorp.com",
+      "created": "2026-01-16T14:40:00Z",
+      "updated": "2026-01-24T14:00:00Z",
+      "timeEstimate": "6h",
+      "timeSpent": "4h",
+      "labels": ["backend", "security"],
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-22T10:00:00Z",
+          "body": "Token generation implemented. Access token expires in 15 min, refresh token in 24 hours. Token rotation enabled - each refresh issues new refresh token and invalidates old one. Refresh token family tracking implemented to detect token theft."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T11:00:00Z",
+          "body": "Need test cases for: 1) Using expired access token, 2) Refreshing with expired refresh token, 3) Attempting to use already-rotated refresh token (should fail), 4) Concurrent refresh requests. Will add to test plan."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-10-4",
+      "type": "Sub-task",
+      "parent": "TRANS-10",
+      "summary": "Build authentication audit logging",
+      "description": "Log all authentication events (successful logins, failures, token refreshes, logouts) to audit table",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "patricia.moore@acorp.com",
+      "created": "2026-01-17T09:00:00Z",
+      "updated": "2026-01-23T14:00:00Z",
+      "timeEstimate": "4h",
+      "labels": ["backend", "security", "audit"],
+      "comments": [
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-17T09:30:00Z",
+          "body": "Audit log must capture: timestamp, user ID, IP address, user agent, action (LOGIN/LOGOUT/REFRESH/FAILED_LOGIN), result. Failed login attempts especially important for detecting brute force attacks."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-20-1",
+      "type": "Sub-task",
+      "parent": "TRANS-20",
+      "summary": "Set up Bloomberg B-PIPE connection and authentication",
+      "description": "Install Bloomberg SDK, configure connection parameters, implement authentication, test connectivity",
+      "status": "Done",
+      "priority": "Critical",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "jessica.lee@acorp.com",
+      "created": "2026-01-17T14:30:00Z",
+      "updated": "2026-01-20T16:00:00Z",
+      "timeEstimate": "4h",
+      "timeSpent": "3h",
+      "labels": ["backend", "integration"],
+      "comments": [
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-19T15:00:00Z",
+          "body": "Bloomberg SDK installed. Connection successful to demo environment. Receiving test market data. API key and server endpoint for production received from Bloomberg support."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-20-2",
+      "type": "Sub-task",
+      "parent": "TRANS-20",
+      "summary": "Implement Bloomberg data adapter with subscription management",
+      "description": "Build service to subscribe/unsubscribe to Bloomberg symbols, handle data events, manage connection lifecycle",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "jessica.lee@acorp.com",
+      "reporter": "jessica.lee@acorp.com",
+      "created": "2026-01-17T14:35:00Z",
+      "updated": "2026-01-24T14:00:00Z",
+      "timeEstimate": "12h",
+      "timeSpent": "10h",
+      "labels": ["backend", "market-data"],
+      "comments": [
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-21T16:00:00Z",
+          "body": "Subscription manager implemented. Tracking active subscriptions per symbol. When last client unsubscribes from symbol, we unsubscribe from Bloomberg to reduce data charges. Reconnection logic working - reconnects with exponential backoff on connection loss."
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-22T09:00:00Z",
+          "body": "Smart optimization on subscription tracking. What's the behavior if Bloomberg connection drops while clients are subscribed? Do clients see 'stale data' indicator?"
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-22T11:00:00Z",
+          "body": "Yes - when Bloomberg disconnects, we send MARKET_DATA_UNAVAILABLE status to all clients. WebSocket connections stay open, clients show warning banner. When Bloomberg reconnects, we automatically resubscribe to all active symbols and send MARKET_DATA_AVAILABLE status."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-20-3",
+      "type": "Sub-task",
+      "parent": "TRANS-20",
+      "summary": "Set up Kafka topic for price distribution",
+      "description": "Create Kafka topic, configure partitioning strategy, implement producer for price updates",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "tom.anderson@acorp.com",
+      "reporter": "jessica.lee@acorp.com",
+      "created": "2026-01-18T09:00:00Z",
+      "updated": "2026-01-23T16:00:00Z",
+      "timeEstimate": "4h",
+      "timeSpent": "3h",
+      "labels": ["infrastructure", "kafka"],
+      "comments": [
+        {
+          "author": "tom.anderson@acorp.com",
+          "created": "2026-01-20T14:00:00Z",
+          "body": "Kafka topic 'market-data-prices' created with 12 partitions. Partition key is symbol ticker for even distribution. Retention set to 1 hour (we only need recent prices). Replication factor 3 for reliability."
+        },
+        {
+          "author": "jessica.lee@acorp.com",
+          "created": "2026-01-21T10:00:00Z",
+          "body": "After more testing, considering switching from Kafka to Redis pub/sub for price distribution. Kafka adds ~15ms latency we don't need for this use case. Redis pub/sub is faster for fan-out to WebSocket servers. Thoughts?"
+        },
+        {
+          "author": "david.chen@acorp.com",
+          "created": "2026-01-21T15:00:00Z",
+          "body": "Redis pub/sub makes sense here. Kafka is overkill for ephemeral price data. Go with Redis. Keep Kafka for events that need persistence (wire submissions, approvals, etc.)."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-30-1",
+      "type": "Sub-task",
+      "parent": "TRANS-30",
+      "summary": "Implement historical price data retrieval",
+      "description": "Build service to fetch 250 days of historical prices for portfolio positions from data warehouse",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "alex.kumar@acorp.com",
+      "created": "2026-01-18T15:00:00Z",
+      "updated": "2026-01-22T10:00:00Z",
+      "timeEstimate": "6h",
+      "labels": ["backend", "data"],
+      "comments": [
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-22T10:00:00Z",
+          "body": "Historical price data stored in PostgreSQL market_data schema. Need to optimize query - 250 positions × 250 days = 62,500 rows. Planning to cache historical data in Redis with 24-hour TTL since historical data doesn't change frequently."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-30-2",
+      "type": "Sub-task",
+      "parent": "TRANS-30",
+      "summary": "Build VaR calculation algorithm using historical simulation",
+      "description": "Implement historical simulation VaR: calculate returns, simulate P&L scenarios, compute percentiles",
+      "status": "To Do",
+      "priority": "Critical",
+      "assignee": "alex.kumar@acorp.com",
+      "reporter": "alex.kumar@acorp.com",
+      "created": "2026-01-18T15:05:00Z",
+      "updated": "2026-01-22T14:00:00Z",
+      "timeEstimate": "10h",
+      "labels": ["backend", "analytics", "algorithm"],
+      "comments": [
+        {
+          "author": "alex.kumar@acorp.com",
+          "created": "2026-01-22T14:00:00Z",
+          "body": "Algorithm designed:\n1. Get portfolio positions & current prices\n2. Fetch 250-day price history for all positions\n3. Calculate daily returns for each position\n4. For each historical day, calculate what portfolio P&L would have been\n5. Sort P&L array and find 5th percentile (95% VaR) or 1st percentile (99% VaR)\n\nUsing NumPy vectorized operations for performance."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-40-1",
+      "type": "Sub-task",
+      "parent": "TRANS-40",
+      "summary": "Design wire transfer database schema",
+      "description": "Create tables for wires, beneficiaries, approvals with proper encryption for sensitive fields",
+      "status": "Done",
+      "priority": "Critical",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "mike.chen@acorp.com",
+      "created": "2026-01-19T14:00:00Z",
+      "updated": "2026-01-21T16:00:00Z",
+      "timeEstimate": "4h",
+      "timeSpent": "4h",
+      "labels": ["backend", "database"],
+      "comments": [
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-21T16:00:00Z",
+          "body": "Schema created. Tables: wires, wire_beneficiaries, wire_approvals, wire_audit_log. Beneficiary account numbers encrypted using AWS KMS. Foreign keys and indexes added. Migration scripts ready for review."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-40-2",
+      "type": "Sub-task",
+      "parent": "TRANS-40",
+      "summary": "Build wire validation service",
+      "description": "Implement validation rules: OFAC check, account validation, amount limits, business day check",
+      "status": "To Do",
+      "priority": "High",
+      "assignee": "mike.chen@acorp.com",
+      "reporter": "patricia.moore@acorp.com",
+      "created": "2026-01-19T14:30:00Z",
+      "updated": "2026-01-23T10:00:00Z",
+      "timeEstimate": "8h",
+      "labels": ["backend", "validation", "compliance"],
+      "comments": [
+        {
+          "author": "patricia.moore@acorp.com",
+          "created": "2026-01-19T15:00:00Z",
+          "body": "OFAC sanctions list updated weekly. Download from Treasury website. Need to check both beneficiary name and country against sanctions list. If match found, wire must be rejected immediately with clear message."
+        },
+        {
+          "author": "mike.chen@acorp.com",
+          "created": "2026-01-23T10:00:00Z",
+          "body": "Question: For OFAC matching, do we need exact match or fuzzy matching? 'Al-Qaida' vs 'Al Qaida' vs 'Al Qaeda' should all be detected. Should I use string similarity algorithm?"
+        }
+      ]
+    },
+    {
+      "key": "TRANS-60-1",
+      "type": "Sub-task",
+      "parent": "TRANS-60",
+      "summary": "Build portfolio summary component",
+      "description": "Create React component showing portfolio cards with NAV, P&L, return % using Material-UI",
+      "status": "In Progress",
+      "priority": "High",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "emily.wang@acorp.com",
+      "created": "2026-01-17T15:00:00Z",
+      "updated": "2026-01-24T13:00:00Z",
+      "timeEstimate": "8h",
+      "timeSpent": "6h",
+      "labels": ["frontend", "react"],
+      "comments": [
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-20T14:00:00Z",
+          "body": "Component structure:\n- PortfolioDashboard (container)\n- PortfolioCard (individual portfolio)\n- PortfolioMetric (reusable metric display)\n\nUsing Material-UI Card, Grid, Typography. Color coding: green for gains, red for losses. Implementing responsive design - 3 columns desktop, 1 column mobile."
+        },
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-21T09:00:00Z",
+          "body": "Design looks clean! One request: show intraday change separately from total return. Traders want to see 'how am I doing TODAY' vs 'how is portfolio performing overall'."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-60-2",
+      "type": "Sub-task",
+      "parent": "TRANS-60",
+      "summary": "Implement WebSocket integration for live price updates",
+      "description": "Connect to pricing WebSocket service, subscribe to portfolio symbols, update UI on price changes",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "emily.wang@acorp.com",
+      "created": "2026-01-17T15:10:00Z",
+      "updated": "2026-01-24T11:00:00Z",
+      "timeEstimate": "10h",
+      "timeSpent": "8h",
+      "labels": ["frontend", "websocket"],
+      "comments": [
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-22T15:00:00Z",
+          "body": "WebSocket client implemented using socket.io-client. Custom hook useWebSocketPrices() handles connection, subscription, cleanup. Reconnection logic working. Batching price updates every 250ms to prevent excessive re-renders."
+        },
+        {
+          "author": "jennifer.rodriguez@acorp.com",
+          "created": "2026-01-23T16:00:00Z",
+          "body": "Memory leak issue found and fixed (already noted in parent story). Additional finding: WebSocket connection not being closed when user navigates away from dashboard. Please add cleanup in useEffect return."
+        },
+        {
+          "author": "emily.wang@acorp.com",
+          "created": "2026-01-24T11:00:00Z",
+          "body": "Cleanup added. WebSocket now properly closes on component unmount and unsubscribes from all symbols. Tested navigation flow - no memory leaks detected."
+        }
+      ]
+    },
+    {
+      "key": "TRANS-60-3",
+      "type": "Sub-task",
+      "parent": "TRANS-60",
+      "summary": "Build position detail drill-down view",
+      "description": "Create expandable rows in portfolio grid showing individual positions with live P&L",
+      "status": "To Do",
+      "priority": "Medium",
+      "assignee": "emily.wang@acorp.com",
+      "reporter": "linda.chen@acorp.com",
+      "created": "2026-01-18T09:00:00Z",
+      "updated": "2026-01-22T10:00:00Z",
+      "timeEstimate": "6h",
+      "labels": ["frontend", "ui"],
+      "comments": [
+        {
+          "author": "linda.chen@acorp.com",
+          "created": "2026-01-18T09:30:00Z",
+          "body": "Drill-down should show: Symbol, Quantity, Avg Cost, Current Price, Market Value, P&L ($), P&L (%), Weight in Portfolio. Sortable by any column. Filter capability would be nice too (e.g., show only losing positions)."
+        }
+      ]
+    }
+  ]
+}
