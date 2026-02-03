@@ -1,1 +1,28 @@
-hi 
+I want to create realistic data for a mock project. I would like to have following 
+(a) Jira as in realistic world. Epic --> stories --> subtask and for each of these suitable commentary in form of comments etc. 
+(b) Outlook email. Email conversations amongst multiple entities with this mail DL being the project specific email (trans_mon_prj@acorp.com) 
+(c) Documents stored in SharePoint/ NAS / Folders etc : there can be design docx, BA notes, Dev Notes, PO notes, SQRs etc
+(d) Zoom transcription. All zoom transcript pertaining to this specific projects are stored in a folder location to be consumed for summarisation/ extracting take aways and point of discussion 
+Personas in this ecosystem : Developer, QA, PM, PO, SM, BA, BDA
+Now lets first start with project definition and relevant documents to it. 
+name of the project : something on the lines of multi-asset execution and post-trade platform. 
+Description : on the lines of - A multi-asset execution and post-trade platform. It provides pre-trade analytics, live pricing, and allows users to authorize cash wires and access portfolio risk reporting from mobile or desktop.
+Goal and objective 
+The primary objective is to create a seamless user experience that integrates front-office (analytics/pricing) and back-office (cash wires/reporting) functions into a single system accessible via mobile and desktop.
+• Empower Users: Provide immediate access to pre-trade analytics and live pricing to improve decision-making speed.
+• Streamline Operations: Facilitate easy authorization of cash wires and access to necessary portfolio risk reporting.
+• Ensure Accessibility: Deliver consistent functionality across both mobile or desktop environments.
+2. Core Concepts & Innovations
+• Unified Interface: A single, intuitive UI/UX design that replaces disparate systems, reducing training time and operational errors.
+• Real-Time Data Flow: Ensuring live pricing is integrated directly into pre-trade analytics, providing accurate, up-to-date information at all times.
+• Cross-Platform Authorization: Implementing secure, multi-factor authorization protocols for critical functions like cash wires across all supported devices (iOS, Android, Web).
+3. Development Process
+1. Platform Consolidation: Migrating data and functionality from legacy systems into a new, resilient cloud-native architecture.
+2. API Development: Building robust APIs to ensure smooth communication between the analytics, pricing, and reporting modules.
+3. Security Integration: Implementing stringent security measures, particularly around the authorization of cash wires and access to sensitive risk data.
+4. Success Metrics
+• Efficiency: A quantifiable reduction in time spent moving between different systems to complete a single workflow.
+• User Adoption: High adoption rate across both desktop and mobile user bases.
+• Transaction Speed: Faster execution and post-trade processing times compared to legacy platforms.
+Would you like me to elaborate on the technical stack required to build a platform like this?
+now on this lines create documents design docx, BA notes, Dev Notes, PO notes, SQRs and many more which an actual project may need
