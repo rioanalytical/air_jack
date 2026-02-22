@@ -1,26 +1,20 @@
-# API Endpoint Documentation
+# Project Structure
 
-This directory contains the API endpoints for the project, now fully implemented using FastAPI.
+- **app/**  
+  Main FastAPI application
 
-## Quick Start
+- **data/**  
+  Data models and handling logic
 
-To get started with FastAPI, follow these instructions:
+- **data/api_endpoint/**  
+  FastAPI endpoints for handling requests
 
-1. **Install FastAPI and a server:**
-   ```bash
-   pip install fastapi[all]
-   ```
+- **tests/**  
+  Unit tests for the FastAPI application
 
-2. **Run your application:**
-   ```bash
-   uvicorn main:app --reload
-   ```
+- **requirements.txt**  
+  Package dependencies for FastAPI project
 
-3. **Access the API:**
-   Navigate to `http://127.0.0.1:8000/docs` to view the FastAPI interactive documentation.
+## Description
 
-Make sure to adjust your application code to utilize FastAPI's features and structure appropriately.
-
-## Consistency with FastAPI Implementation
-
-Ensure that this README is in sync with the FastAPI implementation found in the repository.
+A production-ready FastAPI REST API
