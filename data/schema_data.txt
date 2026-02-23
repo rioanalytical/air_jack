@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS stock_price (
+    ticker TEXT NOT NULL,
+    date TEXT NOT NULL,
+    open REAL,
+    high REAL,
+    low REAL,
+    close REAL,
+    volume INTEGER,
+    PRIMARY KEY (date, ticker)
+)
+
+
+CREATE TABLE IF NOT EXISTS equity_master (
+    ticker TEXT PRIMARY KEY,
+    company_name TEXT,
+    short_name TEXT,
+    sector TEXT,
+    industry TEXT,
+    exchange TEXT,
+    country TEXT,
+    currency TEXT,
+    market_cap INTEGER,
+    employees INTEGER,
+    website TEXT,
+    business_summary TEXT,
+    last_updated TEXT
+)
