@@ -1,0 +1,24 @@
+[program:air_jack]
+command=/path/to/venv/bin/uvicorn data.api_endpoint.app:app --host 0.0.0.0 --port 5000 --workers 4
+directory=/path/to/air_jack
+user=www-data
+autostart=true
+autorestart=true
+startsecs=10
+stopasgroup=true
+killasgroup=true
+
+stdout_logfile=/var/log/air_jack/access.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=5
+stderr_logfile=/var/log/air_jack/error.log
+stderr_logfile_maxbytes=10MB
+stderr_logfile_backups=5
+
+numprocs=1
+priority=999
+umask=0022
+stopsignal=TERM
+stopwaitsecs=30
+
+environment=PYTHONUNBUFFERED=1,PATH="/path/to/venv/bin"
