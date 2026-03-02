@@ -1,0 +1,85 @@
+## Product Definition & Brainstorming co-pilot 
+
+Problem:  teams spend weeks writing specs- stakeholders propose vague ideas - scope creeps
+
+GenAI Solution:
+
+Brainstorm Structuring: Takes messy Product dfefnintion/ feedback/feature requests → generates:
+
+Structured problem statements
+Multiple solution approaches with tradeoffs
+Success metrics for each approach
+Required integrations/data
+
+Variant Management: When stakeholders propose alternatives:
+
+AI auto-compares features, effort, business impact
+Maintains spec versions and rationale
+Tracks "Why was Option B rejected?"
+
+_______________________________________________________________________________________
+
+_______________________________________________________________________________________
+
+## Contextual AI assistant
+
+Problem: New resource joins team → spends 2-3 weeks understanding "why we built it this way"
+
+GenAI Solution:
+
+Auto-indexed knowledge graph that connects:
+
+Design decisions (Docx/email/meetings) → Implementation (code) → Business context
+"Why did we choose Threshold #1 over Threshold #2?" → Historical decisions → Current tradeoffs
+Links between PRs, design docs, business decisions, and outcomes
+
+
+Contextual AI assistant that explains: "This module exists because of XYZ business requirement from 2022, which changed when we pivoted to bussiness"
+Reduces onboarding from 3 weeks to 3 days -- and also in a way would help us follow up on our audit realted things. 
+Audit may not make it to the list of SDLC -- but the benifit is a side product. 
+
+_______________________________________________________________________________________
+
+_______________________________________________________________________________________
+
+## Domain & Business Logic Extraction (Post Facto SDLC) 
+
+Problem: Business logic is scattered across code, docs, spreadsheets, tribal knowledge. New feature requests need context on existing business rules.
+
+GenAI Solution:
+
+Business Rule Mining: Scans code + docs + requirements → extracts:
+
+"RDFI Name match can only use levenshtien with thresold of 90 except for FA on the account name is being matched"
+"Vietnam/ South Africa rules check the demographies on thorugh certain mechanism"
+All the hidden business logic buried in code
+
+Rule Engine Generation: Creates testable, queryable rules
+Impact Analysis: When new feature comes in, shows which business rules it affects
+Audit Compliance Mapping: Links business rules to Audit requirements
+
+
+_______________________________________________________________________________________
+
+_______________________________________________________________________________________
+
+Decision Documentation & Rationale Capture
+Problem: Decisions made in sync calls → 6 months later no one knows WHY → wrong assumption based decision reversed
+GenAI Solution:
+
+Meeting Intelligence: Auto-transcribes/summarizes engineering decisions from:
+
+Design sync meetings
+Brainstorming sessions
+Post-mortems
+Architecture discussions
+
+Generates decision records with:
+
+The Decision: What we're doing
+Alternatives Considered: What we rejected and why
+Tradeoffs: What we're giving up
+Assumptions: What must remain true for this to be right
+Review Date: When to re-evaluate if assumptions change
+
+Assumption Monitoring: Flags when captured assumptions become invalid
